@@ -1,0 +1,57 @@
+.notfound {
+  padding-block: clamp(4rem, 12vh, 9rem);
+}
+
+.notfound__inner {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-7);
+  align-items: start;
+}
+
+.notfound__code {
+  grid-column: 1 / span 2;
+  font-size: var(--step-4);
+  line-height: 0.9;
+  color: var(--fg);
+  letter-spacing: -0.04em;
+  padding-top: 0.15em;
+  border-top: 2px solid var(--ink);
+}
+
+.notfound__body {
+  grid-column: 3 / span 6;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.notfound__title em {
+  font-style: italic;
+  color: var(--fg);
+}
+
+.notfound__copy {
+  max-width: 42ch;
+}
+
+.notfound__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.notfound__aside {
+  grid-column: 10 / span 3;
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1023px) {
+  .notfound__code,
+  .notfound__body,
+  .notfound__aside {
+    grid-column: 1 / -1;
+  }
+}

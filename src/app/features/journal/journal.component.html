@@ -1,0 +1,54 @@
+<section class="journal" aria-labelledby="journal-title">
+  <div class="journal__inner shell">
+    <header class="journal__head">
+      <p class="journal__label label">
+        <span class="journal__label-rule" aria-hidden="true"></span>
+        Journal
+      </p>
+      <h1 class="journal__title display" id="journal-title">
+        Notes on building<br />
+        frontends that <em>last.</em>
+      </h1>
+      <p class="journal__lede body-lg">
+        Occasional writing on architecture, design systems, performance and the parts of
+        frontend work that only show up in the second year.
+      </p>
+    </header>
+
+    <ol class="journal__list">
+      @for (article of articles; track article.slug) {
+        <li class="journal__item" data-journal-row>
+          <a class="journal__link" [routerLink]="'/journal/' + article.slug">
+            <span class="journal__date">
+              <time class="journal__date-text num" [attr.datetime]="article.date">{{
+                formatDate(article.date)
+              }}</time>
+              <span class="journal__reading label">{{ article.readingTime }}</span>
+            </span>
+
+            <span class="journal__main">
+              <span class="journal__article-title h3">{{ article.title }}</span>
+              <span class="journal__excerpt">{{ article.excerpt }}</span>
+            </span>
+
+            <span class="journal__side">
+              <span class="chip">{{ article.tag }}</span>
+              <span class="journal__arrow" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </li>
+      }
+    </ol>
+
+    <footer class="journal__foot">
+      <p class="journal__note label">
+        Five articles. Article bodies are fetched on demand, so the journal list stays
+        small and a reader only downloads what they open.
+      </p>
+      <a class="arrow-link" routerLink="/systems">
+        The engineering manual
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </footer>
+  </div>
+</section>

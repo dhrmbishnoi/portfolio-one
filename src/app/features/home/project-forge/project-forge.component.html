@@ -1,0 +1,201 @@
+<article class="forge" id="forge" aria-labelledby="forge-title">
+  <!-- ------------------------------------------------------------ title row -->
+  <header class="forge__head">
+    <div class="forge__title-block">
+      <p class="forge__index label">
+        <span class="forge__index-num num">02</span>
+        <span class="forge__index-rule" aria-hidden="true"></span>
+        Selected work
+      </p>
+      <h3 class="forge__title display" id="forge-title">Forge</h3>
+      <p class="forge__subtitle body-lg">{{ project.subtitle }}</p>
+    </div>
+
+    <dl class="forge__meta meta">
+      <div class="meta__row">
+        <dt class="meta__key">Year</dt>
+        <dd class="meta__value num">{{ project.year }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Role</dt>
+        <dd class="meta__value">{{ project.role }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Focus</dt>
+        <dd class="meta__value">
+          <span class="forge__chips">
+            @for (item of project.focus; track item) {
+              <span class="chip">{{ item }}</span>
+            }
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </header>
+
+  <!-- --------------------------------------------------------------- brief -->
+  <div class="forge__brief">
+    <div class="forge__brief-block">
+      <p class="label forge__brief-key">Problem</p>
+      <p class="forge__brief-text body">{{ project.problem }}</p>
+    </div>
+    <div class="forge__brief-block">
+      <p class="label forge__brief-key">What was built</p>
+      <p class="forge__brief-text body">{{ project.built }}</p>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------- component anatomy -->
+  <section class="forge__block" aria-labelledby="forge-anatomy-title">
+    <div class="forge__block-head">
+      <h4 class="forge__block-title h4" id="forge-anatomy-title">Component anatomy</h4>
+      <p class="forge__block-note label">exploded view · forge-button</p>
+    </div>
+
+    <div class="forge__anatomy">
+      <div class="forge__anatomy-plate">
+        <div class="forge__plate-row">
+          <p class="forge__plate-key label">01 / surface</p>
+          <div class="forge__specimen" data-forge-layer>
+            <span class="forge__specimen-pad" aria-hidden="true"></span>
+            <span class="forge__specimen-label">Open release gate</span>
+            <span class="forge__specimen-pad" aria-hidden="true"></span>
+          </div>
+          <div class="forge__ruler" aria-hidden="true">
+            <span class="forge__ruler-bar"></span>
+            <span class="forge__ruler-tick"></span>
+            <span class="forge__ruler-tick"></span>
+            <span class="forge__ruler-tick"></span>
+            <span class="forge__ruler-tick"></span>
+            <span class="forge__ruler-bar"></span>
+          </div>
+          <p class="forge__ruler-caption label">--control-gap · 1rem · component token</p>
+        </div>
+
+        <div class="forge__plate-row">
+          <p class="forge__plate-key label">02 / focus ring</p>
+          <div class="forge__specimen forge__specimen--focus" data-forge-layer>
+            <span class="forge__specimen-pad" aria-hidden="true"></span>
+            <span class="forge__specimen-label">Open release gate</span>
+            <span class="forge__specimen-pad" aria-hidden="true"></span>
+          </div>
+          <p class="forge__ruler-caption label">2px · --accent-interactive · offset 3px</p>
+        </div>
+
+        <div class="forge__plate-row">
+          <p class="forge__plate-key label">03 / target</p>
+          <div class="forge__target" aria-hidden="true">
+            <span class="forge__target-box"></span>
+            <span class="forge__target-label label">44 × 44 minimum</span>
+          </div>
+          <p class="forge__ruler-caption label">independent of visual control size</p>
+        </div>
+      </div>
+
+      <ul class="forge__anatomy-notes">
+        <li data-forge-layer>
+          <span class="forge__note-key label">Type</span>
+          <span class="forge__note-value mono">button.label → fg.default → gray.900</span>
+        </li>
+        <li data-forge-layer>
+          <span class="forge__note-key label">Padding</span>
+          <span class="forge__note-value mono">button.padding → control.gap → space.4</span>
+        </li>
+        <li data-forge-layer>
+          <span class="forge__note-key label">Focus</span>
+          <span class="forge__note-value mono">2px accent ring · 3px offset · never removed</span>
+        </li>
+        <li data-forge-layer>
+          <span class="forge__note-key label">Target</span>
+          <span class="forge__note-value mono">44px minimum hit area, independent of size</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------- token graph -->
+  <section class="forge__block" aria-labelledby="forge-tokens-title">
+    <div class="forge__block-head">
+      <h4 class="forge__block-title h4" id="forge-tokens-title">Token graph</h4>
+      <p class="forge__block-note label">primitive → alias → component</p>
+    </div>
+
+    <div class="forge__tokens">
+      <app-technical-diagram
+        kind="token-graph"
+        label="Token relationships"
+        caption="The import rule is what makes the model survive a rebrand."
+      />
+
+      <ol class="forge__token-layers">
+        @for (layer of visuals.themeLayers; track layer.id) {
+          <li class="forge__token-layer" data-forge-layer>
+            <span class="forge__token-layer-index label">{{ layer.id }}</span>
+            <span class="forge__token-layer-body">
+              <span class="forge__token-layer-label">{{ layer.label }}</span>
+              <span class="forge__token-layer-detail small">{{ layer.detail }}</span>
+            </span>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------- interaction states -->
+  <section class="forge__block" aria-labelledby="forge-states-title" data-forge-states>
+    <div class="forge__block-head">
+      <h4 class="forge__block-title h4" id="forge-states-title">Interaction states</h4>
+      <p class="forge__block-note label">a set, not a list of one-offs</p>
+    </div>
+
+    <ul class="forge__states">
+      @for (state of visuals.states; track state.id) {
+        <li class="forge__state" data-forge-state [attr.data-state]="state.id">
+          <span class="forge__state-chip" [attr.data-state]="state.id">
+            <span class="forge__state-chip-label">{{ state.label }}</span>
+          </span>
+          <span class="forge__state-note small">{{ state.note }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- ------------------------------------------------------ component API -->
+  <section class="forge__block" aria-labelledby="forge-api-title">
+    <div class="forge__block-head">
+      <h4 class="forge__block-title h4" id="forge-api-title">Component API</h4>
+      <p class="forge__block-note label">the public surface is the types</p>
+    </div>
+
+    <div class="forge__api">
+      <app-code-block
+        [code]="visuals.apiCode"
+        language="typescript"
+        filename="release-gate.component.ts"
+      />
+
+      <ul class="forge__patterns">
+        @for (pattern of visuals.a11yPatterns; track pattern) {
+          <li class="forge__pattern">
+            <span class="forge__pattern-marker" aria-hidden="true"></span>{{ pattern }}
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------------- foot -->
+  <footer class="forge__foot">
+    <ul class="forge__focus">
+      @for (item of project.technicalFocus; track item) {
+        <li class="forge__focus-item">
+          <span class="forge__focus-marker" aria-hidden="true"></span>{{ item }}
+        </li>
+      }
+    </ul>
+    <a class="arrow-link forge__cta" routerLink="/work/forge">
+      Read the Forge case study
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </footer>
+</article>

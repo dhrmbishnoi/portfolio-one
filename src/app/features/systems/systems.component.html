@@ -1,0 +1,92 @@
+<section class="manual" aria-labelledby="manual-title">
+  <div class="manual__inner shell">
+    <header class="manual__head">
+      <p class="manual__label label">
+        <span class="manual__label-rule" aria-hidden="true"></span>
+        Systems
+      </p>
+      <h1 class="manual__title display" id="manual-title">
+        An engineering<br />
+        <em>manual.</em>
+      </h1>
+      <p class="manual__lede body-lg">
+        The rules I actually work by. This page is reference material rather than a
+        services list — the same decisions that show up in the work, written down.
+      </p>
+    </header>
+
+    <div class="manual__body">
+      <nav class="manual__rail rail" aria-label="Manual sections">
+        <p class="manual__rail-title label">Sections</p>
+        <ol class="manual__rail-list">
+          @for (section of sections; track section.id) {
+            <li class="manual__rail-item">
+              <a class="manual__rail-link" [href]="'#' + section.id">
+                <span class="manual__rail-index label">{{ section.label }}</span>
+                <span class="manual__rail-label">{{ section.title }}</span>
+              </a>
+            </li>
+          }
+        </ol>
+      </nav>
+
+      <div class="manual__content">
+        @for (section of sections; track section.id) {
+          <article class="manual__section" [id]="section.id" data-manual-section>
+            <header class="manual__section-head">
+              <p class="manual__section-index label">{{ section.label }}</p>
+              <h2 class="manual__section-title h2">{{ section.title }}</h2>
+              <p class="manual__section-lede body-lg">{{ section.lede }}</p>
+            </header>
+
+            <div class="prose">
+              @for (paragraph of section.body; track paragraph) {
+                <p>{{ paragraph }}</p>
+              }
+            </div>
+
+            @if (section.bullets) {
+              <ul class="manual__bullets">
+                @for (bullet of section.bullets; track bullet) {
+                  <li class="manual__bullet">
+                    <span class="manual__bullet-marker" aria-hidden="true"></span>{{ bullet }}
+                  </li>
+                }
+              </ul>
+            }
+
+            @if (section.diagram) {
+              <figure class="manual__figure">
+                <app-technical-diagram
+                  [kind]="section.diagram"
+                  [caption]="section.caption ?? ''"
+                  [label]="section.id"
+                />
+              </figure>
+            }
+
+            @if (section.code) {
+              <figure class="manual__figure">
+                <app-code-block
+                  [code]="section.code.code"
+                  [language]="section.code.language"
+                  [filename]="section.code.filename"
+                />
+              </figure>
+            }
+          </article>
+        }
+
+        <footer class="manual__foot">
+          <a class="arrow-link" routerLink="/work">
+            See the rules applied — selected work
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <p class="manual__foot-note label">
+            Angular {{ '22' }} · TypeScript · standalone APIs · signals · SCSS
+          </p>
+        </footer>
+      </div>
+    </div>
+  </div>
+</section>

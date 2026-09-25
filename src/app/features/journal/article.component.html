@@ -1,0 +1,105 @@
+@if (entry(); as article) {
+  <article class="reader">
+    <div class="reader__inner shell">
+      <header class="reader__head">
+        <p class="reader__crumb label">
+          <a class="link link--muted" routerLink="/journal">Journal</a>
+          <span aria-hidden="true">/</span>
+          <span>{{ article.tag }}</span>
+        </p>
+
+        <h1 class="reader__title display">{{ article.title }}</h1>
+
+        <div class="reader__meta">
+          <p class="reader__meta-item label">
+            <time [attr.datetime]="article.date">{{ formatDate(article.date) }}</time>
+          </p>
+          <p class="reader__meta-item label">{{ article.readingTime }} read</p>
+          <p class="reader__meta-item label">{{ article.tag }}</p>
+        </div>
+
+        <p class="reader__lede body-lg">{{ article.excerpt }}</p>
+      </header>
+
+      @if (loading()) {
+        <!-- Skeleton: real async content, thin animated line, subtle contrast. -->
+        <div class="reader__skeleton" aria-hidden="true">
+          @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+            <span
+              class="skeleton reader__skeleton-line"
+              [style.width]="i % 3 === 0 ? '72%' : '100%'"
+            ></span>
+          }
+        </div>
+        <p class="visually-hidden" role="status">Loading article</p>
+      } @else if (failed()) {
+        <div class="reader__error" role="alert">
+          <h2 class="h4">The article body could not be loaded.</h2>
+          <p class="body">
+            This is the one genuinely asynchronous part of the site. Try the article again,
+            or go back to the journal index.
+          </p>
+          <a class="btn btn--ghost" routerLink="/journal">Back to the journal</a>
+        </div>
+      } @else if (body(); as content) {
+        <div class="reader__body prose">
+          @for (block of content.blocks; track trackBlock($index, block)) {
+            @switch (block.kind) {
+              @case ('heading') {
+                <h2 class="reader__heading h2">{{ block.text }}</h2>
+              }
+              @case ('paragraph') {
+                <p>{{ block.text }}</p>
+              }
+              @case ('list') {
+                <ul>
+                  @for (item of block.items; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              }
+              @case ('quote') {
+                <blockquote class="reader__quote">
+                  <p>{{ block.text }}</p>
+                  @if (block.attribution) {
+                    <footer class="label">{{ block.attribution }}</footer>
+                  }
+                </blockquote>
+              }
+              @case ('note') {
+                <aside class="reader__note">
+                  <p class="label reader__note-key">{{ block.label }}</p>
+                  <p>{{ block.text }}</p>
+                </aside>
+              }
+              @case ('code') {
+                <figure class="reader__figure">
+                  <app-code-block
+                    [code]="block.code"
+                    [language]="block.language"
+                    [filename]="block.filename ?? ''"
+                  />
+                </figure>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+
+    @if (next(); as upcoming) {
+      <nav class="reader__next" aria-label="Next article">
+        <a class="reader__next-link" [routerLink]="'/journal/' + upcoming.slug">
+          <span class="reader__next-inner shell">
+            <span class="label reader__next-label">Next article</span>
+            <span class="reader__next-title h2">{{ upcoming.title }}</span>
+            <span class="reader__next-meta label">
+              {{ formatDate(upcoming.date) }} · {{ upcoming.readingTime }}
+            </span>
+            <span class="reader__next-arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+      </nav>
+    }
+  </article>
+}

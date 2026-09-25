@@ -1,0 +1,138 @@
+.td {
+  margin: 0;
+  display: grid;
+  // Zero-minimum track so an SVG can never widen its column.
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.td__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.td__kind {
+  color: var(--accent-dark);
+}
+
+.on-dark .td__kind {
+  color: var(--accent);
+}
+
+.td__canvas {
+  border: 1px solid var(--rule);
+  background-color: var(--surface);
+  padding: var(--space-4);
+}
+
+.on-dark .td__canvas {
+  background-color: var(--dark-elevated);
+}
+
+.td__canvas svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.td__caption {
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  max-width: 52ch;
+}
+
+// ---------------------------------------------------------------- svg parts
+
+.td__edges path {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-linecap: square;
+}
+
+.td__nodes rect {
+  fill: var(--surface-raised);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.on-dark .td__nodes rect {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: var(--border-dark-strong);
+}
+
+.td__nodes text {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  fill: var(--fg);
+}
+
+.td__nodes .td__node--core {
+  stroke: var(--accent-dark);
+}
+
+.td__node--shared {
+  stroke-dasharray: 3 2;
+}
+
+.td__node--primitive {
+  stroke: var(--border-strong);
+}
+
+.td__node--alias {
+  stroke: var(--ink);
+}
+
+.td__node--component {
+  stroke-dasharray: 3 2;
+}
+
+.td__annot text {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  fill: var(--fg-muted);
+}
+
+// ------------------------------------------------------------ trace diagram
+
+.td__grid path {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.td__budget {
+  fill: none;
+  stroke: var(--fg-muted);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.td__trace {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: square;
+}
+
+.td__trace--alt {
+  stroke: var(--accent-dark);
+  stroke-width: 1.4;
+}
+
+// ----------------------------------------------------------- viewport grid
+
+.td__cols rect {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+}

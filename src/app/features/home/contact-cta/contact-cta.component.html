@@ -1,0 +1,27 @@
+<section class="cta" aria-labelledby="cta-title">
+  <div class="cta__inner shell">
+    <p class="cta__label label" data-cta-line>
+      <span class="cta__label-rule" aria-hidden="true"></span>
+      Contact
+    </p>
+
+    <h2 class="cta__title display" id="cta-title">
+      <span class="cta__line" data-cta-line>Building something</span>
+      <span class="cta__line" data-cta-line>that deserves</span>
+      <span class="cta__line cta__line--accent" data-cta-line>care?</span>
+    </h2>
+
+    <p class="cta__copy body-lg" data-cta-line>
+      I’m interested in product teams that value thoughtful frontend architecture,
+      strong interaction design and long-term quality.
+    </p>
+
+    <div class="cta__actions" data-cta-line>
+      <a class="btn" routerLink="/contact">
+        Start a conversation
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="btn btn--ghost" [href]="site.contact.mailto">{{ site.contact.email }}</a>
+    </div>
+  </div>
+</section>

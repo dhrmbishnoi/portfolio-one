@@ -1,0 +1,244 @@
+<article class="signal" id="signal" aria-labelledby="signal-title">
+  <!-- ------------------------------------------------------------ title row -->
+  <header class="signal__head">
+    <div class="signal__title-block">
+      <p class="signal__index label">
+        <span class="signal__index-num num">03</span>
+        <span class="signal__index-rule" aria-hidden="true"></span>
+        Selected work
+      </p>
+      <h3 class="signal__title display" id="signal-title">Signal</h3>
+      <p class="signal__subtitle body-lg">{{ project.subtitle }}</p>
+    </div>
+
+    <dl class="signal__meta meta">
+      <div class="meta__row">
+        <dt class="meta__key">Year</dt>
+        <dd class="meta__value num">{{ project.year }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Role</dt>
+        <dd class="meta__value">{{ project.role }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Focus</dt>
+        <dd class="meta__value">
+          <span class="signal__chips">
+            @for (item of project.focus; track item) {
+              <span class="chip">{{ item }}</span>
+            }
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </header>
+
+  <!-- --------------------------------------------------------------- brief -->
+  <div class="signal__brief">
+    <div class="signal__brief-block">
+      <p class="label signal__brief-key">Problem</p>
+      <p class="signal__brief-text body">{{ project.problem }}</p>
+    </div>
+    <div class="signal__brief-block">
+      <p class="label signal__brief-key">What was built</p>
+      <p class="signal__brief-text body">{{ project.built }}</p>
+    </div>
+  </div>
+
+  <!-- --------------------------------------------------------- web vitals -->
+  <section class="signal__block" aria-labelledby="signal-vitals-title">
+    <div class="signal__block-head">
+      <h4 class="signal__block-title h4" id="signal-vitals-title">Web vitals</h4>
+      <p class="signal__block-note label">one normalised series shape feeds every panel</p>
+    </div>
+
+    <div class="signal__vitals">
+      @for (trace of traces(); track trace.id) {
+        <figure class="signal__vital" data-signal-panel>
+          <figcaption class="signal__vital-head">
+            <span class="signal__vital-id label">{{ trace.id }}</span>
+            <span class="signal__vital-rating" [attr.data-rating]="trace.rating">
+              <span class="signal__vital-glyph" aria-hidden="true">{{
+                trace.rating === 'good' ? '●' : '▲'
+              }}</span>
+              {{ traceRating(trace) }}
+            </span>
+          </figcaption>
+
+          <svg
+            class="signal__trace"
+            viewBox="0 0 260 54"
+            role="img"
+            [attr.aria-label]="trace.label + ' trace, budget ' + trace.budget + (trace.unit ? ' ' + trace.unit : '')"
+          >
+            <path class="signal__trace-budget" [attr.d]="'M0 ' + budgetY(trace) + ' H260'" />
+            <path class="signal__trace-line" [attr.d]="trace.path" data-signal-path />
+          </svg>
+
+          <div class="signal__vital-foot">
+            <span class="signal__vital-label">{{ trace.label }}</span>
+            <span class="signal__vital-budget num">budget {{ trace.budget }}{{ trace.unit }}</span>
+          </div>
+
+          <!-- Text equivalent of the SVG trace. The wrapper is the clipping
+               block: a <table> is not a block container, so `overflow: hidden`
+               on the table itself is ignored and the row of nowrap cells would
+               widen the page. -->
+          <div class="visually-hidden">
+            <table class="signal__table">
+              <caption>{{ trace.label }} series</caption>
+              <tbody>
+                <tr>
+                  <th scope="row">{{ trace.label }}</th>
+                  @for (point of trace.points; track $index) {
+                    <td class="num">{{ point }}</td>
+                  }
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      }
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------- waterfall -->
+  <section class="signal__block" aria-labelledby="signal-waterfall-title">
+    <div class="signal__block-head">
+      <h4 class="signal__block-title h4" id="signal-waterfall-title">Request waterfall</h4>
+      <p class="signal__block-note label">shared time axis · ordered by start</p>
+    </div>
+
+    <div class="signal__waterfall" data-signal-panel>
+      @for (row of visuals.waterfall; track row.id) {
+        <div class="signal__row">
+          <span class="signal__row-label" [attr.data-kind]="row.kind">{{ row.label }}</span>
+          <span class="signal__row-track">
+            <span
+              class="signal__row-bar"
+              [attr.data-kind]="row.kind"
+              [style.left]="row.start * waterfallScale() + '%'"
+              [style.width]="row.duration * waterfallScale() + '%'"
+              data-signal-bar
+            ></span>
+          </span>
+          <span class="signal__row-meta num">{{ row.duration }}ms · {{ row.status }}</span>
+        </div>
+      }
+      <div class="signal__waterfall-axis" aria-hidden="true">
+        <span class="num">0ms</span>
+        <span class="num">400</span>
+        <span class="num">800</span>
+        <span class="num">1200</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------- bundle map -->
+  <section class="signal__block" aria-labelledby="signal-bundle-title">
+    <div class="signal__block-head">
+      <h4 class="signal__block-title h4" id="signal-bundle-title">Bundle map</h4>
+      <p class="signal__block-note label">derived from the build manifest, never hand-entered</p>
+    </div>
+
+    <div class="signal__bundle">
+      <div class="signal__bundle-bar" role="img" aria-label="Bundle composition by segment">
+        @for (part of visuals.bundle; track part.id) {
+          <span
+            class="signal__bundle-segment"
+            [attr.data-kind]="part.kind"
+            [style.width]="bundlePercent(part.bytes) + '%'"
+            data-signal-segment
+          ></span>
+        }
+      </div>
+
+      <ul class="signal__bundle-key">
+        @for (part of visuals.bundle; track part.id) {
+          <li class="signal__bundle-item">
+            <span class="signal__bundle-swatch" [attr.data-kind]="part.kind" aria-hidden="true"></span>
+            <span class="signal__bundle-label">{{ part.label }}</span>
+            <span class="signal__bundle-value num">{{ formatBytes(part.bytes) }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------ route budgets -->
+  <section class="signal__block" aria-labelledby="signal-routes-title">
+    <div class="signal__block-head">
+      <h4 class="signal__block-title h4" id="signal-routes-title">Route performance</h4>
+      <p class="signal__block-note label">the same threshold the build asserts</p>
+    </div>
+
+    <div
+      class="signal__table-scroll"
+      tabindex="0"
+      role="group"
+      aria-label="Route performance table, scrollable on narrow viewports"
+    >
+      <table class="signal__table signal__table--full">
+        <caption>Measured performance by route</caption>
+      <thead>
+        <tr>
+          <th scope="col">Route</th>
+          <th scope="col">LCP</th>
+          <th scope="col">INP</th>
+          <th scope="col">CLS</th>
+          <th scope="col">Transfer</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of visuals.routes; track row.route) {
+          <tr>
+            <th scope="row">{{ row.route }}</th>
+            <td class="num">{{ row.lcp }}</td>
+            <td class="num">{{ row.inp }}</td>
+            <td class="num">{{ row.cls }}</td>
+            <td class="num">{{ row.transfer }}</td>
+          </tr>
+        }
+      </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------- error states -->
+  <section class="signal__block" aria-labelledby="signal-errors-title">
+    <div class="signal__block-head">
+      <h4 class="signal__block-title h4" id="signal-errors-title">Runtime health</h4>
+      <p class="signal__block-note label">severity · source · resolution state</p>
+    </div>
+
+    <ul class="signal__errors">
+      @for (error of visuals.errors; track error.id) {
+        <li class="signal__error" [attr.data-severity]="error.severity">
+          <span class="signal__error-severity" [attr.data-severity]="error.severity">
+            <span class="signal__error-glyph" aria-hidden="true">{{
+              error.severity === 'error' ? '✕' : '!'
+            }}</span>
+            {{ error.severity }}
+          </span>
+          <span class="signal__error-label mono">{{ error.label }}</span>
+          <span class="signal__error-detail small">{{ error.detail }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- --------------------------------------------------------------- foot -->
+  <footer class="signal__foot">
+    <ul class="signal__focus">
+      @for (item of project.technicalFocus; track item) {
+        <li class="signal__focus-item">
+          <span class="signal__focus-marker" aria-hidden="true"></span>{{ item }}
+        </li>
+      }
+    </ul>
+    <a class="arrow-link signal__cta" routerLink="/work/signal">
+      Read the Signal case study
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </footer>
+</article>

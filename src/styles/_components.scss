@@ -1,0 +1,412 @@
+// ============================================================================
+//  COMPONENT PRIMITIVES
+//  Shared, token-driven building blocks used across features. Everything here
+//  is hand-rolled — no UI library, no utility framework.
+// ============================================================================
+
+@use 'tokens';
+
+// ------------------------------------------------------------- text links ---
+
+// Link underline: a rule that draws in from the left on hover/focus.
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--fg);
+  padding-block: 0.15em;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+.link--muted {
+  color: var(--fg-secondary);
+
+  &:hover {
+    color: var(--fg);
+  }
+}
+
+// Arrow affordance: shifts right and settles.
+.arrow {
+  display: inline-block;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.link:hover .arrow,
+.arrow-link:hover .arrow,
+.arrow-link:focus-visible .arrow {
+  transform: translateX(0.28em);
+}
+
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg);
+  padding-block: var(--space-2);
+}
+
+// ---------------------------------------------------------------- buttons ---
+
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-border: var(--ink);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 2.875rem;
+  padding: 0 var(--space-5);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--btn-border);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  position: relative;
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+
+  &:hover {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--accent-ink);
+    --btn-border: var(--accent);
+  }
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  --btn-border: var(--border-strong);
+
+  &:hover {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--paper);
+    --btn-border: var(--ink);
+  }
+}
+
+.on-dark .btn {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-ink);
+  --btn-border: var(--accent);
+
+  &:hover {
+    --btn-bg: transparent;
+    --btn-fg: var(--fg);
+    --btn-border: var(--accent);
+  }
+}
+
+.on-dark .btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  --btn-border: var(--border-dark-strong);
+
+  &:hover {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--accent-ink);
+    --btn-border: var(--accent);
+  }
+}
+
+// ------------------------------------------------------------- status dot ---
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  white-space: nowrap;
+}
+
+.status__dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-dark);
+  flex: none;
+}
+
+.on-dark .status__dot {
+  background-color: var(--accent);
+}
+
+// ------------------------------------------------------------------ chips ---
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  white-space: nowrap;
+}
+
+.chip--accent {
+  border-color: var(--accent-dark);
+  color: var(--accent-ink);
+  background-color: var(--accent);
+}
+
+.on-dark .chip--accent {
+  background-color: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+// ------------------------------------------------------------- meta pairs ---
+
+.meta {
+  display: grid;
+}
+
+.meta__row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-2);
+  border-top: 1px solid var(--rule);
+
+  &:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+}
+
+.meta__key {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.meta__value {
+  font-size: var(--step--1);
+  color: var(--fg);
+  line-height: 1.45;
+}
+
+@media (max-width: 767px) {
+  .meta__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+}
+
+// ------------------------------------------------------------ code blocks ---
+
+.code {
+  border: 1px solid var(--rule);
+  background-color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.65;
+  overflow: hidden;
+}
+
+.on-dark .code {
+  background-color: var(--dark-elevated);
+}
+
+.code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  background-color: rgba(20, 20, 20, 0.03);
+}
+
+.on-dark .code__bar {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.code__file {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.code__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  transition:
+    color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out);
+
+  &:hover {
+    color: var(--fg);
+    border-color: var(--rule);
+  }
+}
+
+.code__copy[data-copied='true'] {
+  color: var(--accent-ink);
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.code pre {
+  margin: 0;
+  padding: var(--space-4);
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.code code {
+  font-family: var(--font-mono);
+  white-space: pre;
+}
+
+// Very small, dependency-free token colouring for code samples.
+.tok-key {
+  color: #6f5bd4;
+}
+.tok-str {
+  color: #2f7d54;
+}
+.tok-num {
+  color: #b4552b;
+}
+.tok-com {
+  color: var(--fg-muted);
+  font-style: italic;
+}
+.tok-fn {
+  color: #1f5f9e;
+}
+.tok-typ {
+  color: #8a5a1a;
+}
+
+.on-dark .tok-key {
+  color: #c3b4ff;
+}
+.on-dark .tok-str {
+  color: #9fe6b8;
+}
+.on-dark .tok-num {
+  color: #f2b48c;
+}
+.on-dark .tok-fn {
+  color: #9ecbff;
+}
+.on-dark .tok-typ {
+  color: #f3d39a;
+}
+
+// ---------------------------------------------------------- diagram frames ---
+
+.diagram {
+  position: relative;
+  border: 1px solid var(--rule);
+  background-color: var(--surface);
+}
+
+.on-dark .diagram {
+  background-color: var(--dark-elevated);
+}
+
+.diagram__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.diagram__body {
+  padding: var(--space-4);
+}
+
+// Margin annotation with a hairline leader — the "technical notebook" voice.
+.annotation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--fg-muted);
+}
+
+.annotation__marker {
+  width: 1.5rem;
+  height: 1px;
+  margin-top: 0.6em;
+  background-color: var(--accent-dark);
+  flex: none;
+}
+
+.on-dark .annotation__marker {
+  background-color: var(--accent);
+}
+
+// ------------------------------------------------------------------- kbd ----
+
+.kbd {
+  display: inline-block;
+  min-width: 1.5rem;
+  text-align: center;
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  color: var(--fg);
+  background-color: var(--surface);
+}

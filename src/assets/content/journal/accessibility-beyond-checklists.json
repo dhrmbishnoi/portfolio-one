@@ -1,0 +1,71 @@
+{
+  "slug": "accessibility-beyond-checklists",
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "Specify the state set, not the attribute"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Every interactive component has a full state set: default, hover, focus, active, disabled, loading and error. A checklist item that says \"has a visible focus indicator\" is satisfied by a browser default. A state specification that says \"focus is a 2px accent ring at 3px offset on every control, always\" is satisfied by nothing until you build it."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Default, hover, focus, active, disabled — specified together, not discovered later.",
+        "Focus is never removed, including on mouse interaction.",
+        "Disabled is reserved for actions that are genuinely unavailable.",
+        "Loading and error are states with their own announcement, not a colour change."
+      ]
+    },
+    {
+      "kind": "note",
+      "label": "Pattern",
+      "text": "If a state change is only visible as a colour, it is not a state — it is a guess. Pair it with a glyph, a label or an announcement."
+    },
+    {
+      "kind": "heading",
+      "text": "Own it in the component"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The single highest-leverage change I have made to a frontend codebase was moving the accessibility contract inside the components. Accessible names became required inputs. Announcements became component-owned live regions. Hit areas became enforced at the component rather than left to layout."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "icon-button.component.ts",
+      "code": "@Component({\n  selector: 'app-icon-button',\n  standalone: true,\n  host: {\n    // A missing accessible name is a type error, not a runtime bug.\n    '[attr.aria-label]': 'label()',\n    '[attr.aria-disabled]': 'disabled() || null',\n  },\n})\nexport class IconButton {\n  readonly label = input.required<string>();\n  readonly disabled = input(false);\n}"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The consequence is that an accessibility review stops being an audit of four products and becomes a review of one library. One fix, four products, no tickets."
+    },
+    {
+      "kind": "heading",
+      "text": "Keyboard parity is a design decision"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Retrofitting a keyboard model onto a grid, a timeline or a virtualised list means changing the selection semantics that the pointer model already depends on. It is far cheaper to decide the keyboard model first and let the pointer be one implementation of it."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Arrow keys move selection; Page Up and Page Down move by a larger unit.",
+        "Home and End go to the edges of the current window, not the document.",
+        "Virtualised rows report a stable aria-rowindex, so position never lies.",
+        "Rapid updates are rate-limited before they reach a live region."
+      ]
+    },
+    {
+      "kind": "quote",
+      "text": "The checklist tells you what you forgot. The state set tells you what you never decided.",
+      "attribution": "Accessibility note"
+    },
+    {
+      "kind": "paragraph",
+      "text": "And a closing honesty note: none of this is certification. It is a set of decisions that were made explicit, shipped with the feature, and verified by walking the interface with a keyboard and a screen reader. That is a different claim, and it is the one worth making."
+    }
+  ]
+}

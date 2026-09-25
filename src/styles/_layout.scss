@@ -1,0 +1,230 @@
+// ============================================================================
+//  LAYOUT
+//  12-column grid, 1480px shell, asymmetric by default.
+//  Breakpoints: 390 / 768 / 1024 / 1440 / 1920
+// ============================================================================
+
+@use 'tokens';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-dark);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--accent);
+}
+
+// ------------------------------------------------------------------- shell
+
+.shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
+}
+
+.shell--wide {
+  max-width: none;
+}
+
+// A shell that lets full-bleed rules run to the viewport edge while content
+// stays inside the measure. Used for editorial rules and dark sections.
+.bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+// -------------------------------------------------------------------- grid
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  column-gap: var(--gutter);
+}
+
+.grid--tight {
+  column-gap: var(--space-4);
+}
+
+// ------------------------------------------------------------- section flow
+
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+
+.section--tight {
+  padding-block: var(--section-y-tight);
+}
+
+.rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background-color: var(--rule);
+}
+
+.rule--strong {
+  background-color: var(--border-strong);
+}
+
+// Section heading block: mono label + editorial title + optional lede,
+// deliberately left-aligned and offset into the grid.
+.section-head {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: end;
+  gap: var(--space-5) var(--gutter);
+  padding-bottom: var(--space-7);
+}
+
+.section-head__label {
+  grid-column: 1 / span 2;
+}
+
+.section-head__title {
+  grid-column: 3 / span 7;
+}
+
+.section-head__lede {
+  grid-column: 3 / span 6;
+}
+
+@media (max-width: 1023px) {
+  .section-head {
+    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+  }
+
+  .section-head__label,
+  .section-head__title,
+  .section-head__lede {
+    grid-column: 1 / -1;
+  }
+}
+
+// ------------------------------------------------------------ utility bits
+
+.stack {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: calc(var(--z-loader) + 1);
+  transform: translateY(-200%);
+  background-color: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: var(--space-3) var(--space-5);
+  transition: transform var(--dur-2) var(--ease-out);
+
+  &:focus-visible {
+    transform: translateY(0);
+    outline-color: var(--accent-dark);
+  }
+}
+
+// Sticky index rail used by case studies and the systems page.
+.rail {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-7));
+  align-self: start;
+}
+
+@media (max-width: 1023px) {
+  .rail {
+    position: static;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// WIDE CONTENT GUARD
+// Grid and flex items default to `min-width: auto`, so a wide child (an SVG, a
+// <pre>, a <table>) can push its track past the container and scroll the whole
+// page. Component hosts and the two wide primitives opt out explicitly.
+// ---------------------------------------------------------------------------
+
+app-technical-diagram,
+app-code-block,
+.td,
+.td__canvas,
+.signal__table-scroll {
+  min-width: 0;
+}
+
+app-technical-diagram,
+app-code-block {
+  display: block;
+}

@@ -1,0 +1,126 @@
+// ============================================================================
+//  DESIGN TOKENS — "Technical Editorial Modernism"
+//  Single source of truth for colour, type, space, motion and elevation.
+//  Every visual decision in the product resolves to a token defined here.
+// ============================================================================
+
+:root {
+  // ------------------------------------------------------------------ colour
+  // Paper & surfaces (light / editorial register)
+  --paper: #ece9e2;
+  --surface: #f7f5f0;
+  --surface-raised: #fffdf8;
+
+  // Ink & text
+  --ink: #141414;
+  --ink-secondary: #625f59;
+  --ink-muted: #87837c;
+
+  // Dark register (used for engineering / closing sections)
+  --dark: #171a19;
+  --dark-elevated: #202421;
+
+  // Accent — deliberately scarce
+  --accent: #d9ff57;
+  --accent-dark: #b6d943;
+  --accent-ink: #1d2405;
+
+  // Rules
+  --border: rgba(20, 20, 20, 0.14);
+  --border-strong: rgba(20, 20, 20, 0.32);
+  --border-dark: rgba(255, 255, 255, 0.13);
+  --border-dark-strong: rgba(255, 255, 255, 0.3);
+
+  // Semantic aliases
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-secondary: var(--ink-secondary);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--border);
+
+  // ------------------------------------------------------------------- type
+  --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader Variable', 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  // Fluid type scale — 390px → 1920px
+  --step--2: clamp(0.688rem, 0.67rem + 0.09vw, 0.75rem);
+  --step--1: clamp(0.75rem, 0.73rem + 0.11vw, 0.813rem);
+  --step-0: clamp(0.938rem, 0.91rem + 0.14vw, 1.063rem);
+  --step-1: clamp(1.125rem, 1.06rem + 0.32vw, 1.375rem);
+  --step-2: clamp(1.375rem, 1.24rem + 0.68vw, 1.875rem);
+  --step-3: clamp(1.75rem, 1.44rem + 1.55vw, 2.875rem);
+  --step-4: clamp(2.25rem, 1.6rem + 3.25vw, 4.25rem);
+  --step-5: clamp(2.75rem, 1.55rem + 6vw, 6.5rem);
+
+  --leading-tight: 1.04;
+  --leading-snug: 1.18;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.72;
+
+  --tracking-tight: -0.022em;
+  --tracking-snug: -0.012em;
+  --tracking-label: 0.16em;
+  --tracking-wide: 0.08em;
+
+  // ------------------------------------------------------------------ space
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --section-y: clamp(5.5rem, 9vh + 3.5rem, 11rem);
+  --section-y-tight: clamp(3.5rem, 6vh + 2rem, 6.5rem);
+
+  // ------------------------------------------------------------------ layout
+  --shell-max: 1480px;
+  --pad-x: clamp(1.25rem, 4.2vw, 4.5rem);
+  --gutter: clamp(1rem, 1.6vw, 1.75rem);
+  --columns: 12;
+  --header-h: 4.5rem;
+  --measure: 62ch;
+
+  // --------------------------------------------------------------- elevation
+  --radius-0: 0px;
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --shadow-1: 0 1px 0 rgba(20, 20, 20, 0.04);
+  --shadow-2: 0 18px 40px -28px rgba(20, 20, 20, 0.4);
+
+  // ----------------------------------------------------------------- motion
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 520ms;
+  --dur-5: 820ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-linear: linear;
+
+  // ------------------------------------------------------------------ layers
+  --z-header: 100;
+  --z-loader: 200;
+  --z-menu: 150;
+}
+
+// Dark register overrides — applied to any block that opts into the dark
+// editorial surface (`.on-dark`), so nested components stay token-driven.
+.on-dark {
+  --bg: var(--dark);
+  --fg: #f4f2ec;
+  --fg-secondary: rgba(244, 242, 236, 0.68);
+  --fg-muted: rgba(244, 242, 236, 0.46);
+  --rule: var(--border-dark);
+  --border: var(--border-dark);
+  --border-strong: var(--border-dark-strong);
+  --surface: var(--dark-elevated);
+  --surface-raised: #262b26;
+
+  color: var(--fg);
+  background-color: var(--bg);
+}

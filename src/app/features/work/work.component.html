@@ -1,0 +1,60 @@
+<section class="work-index" aria-labelledby="work-index-title">
+  <div class="work-index__inner shell">
+    <header class="work-index__head">
+      <p class="work-index__label label">
+        <span class="work-index__label-rule" aria-hidden="true"></span>
+        Selected work
+      </p>
+      <h1 class="work-index__title display" id="work-index-title">
+        Three projects,<br />
+        three different <em>problems.</em>
+      </h1>
+      <p class="work-index__lede body-lg">
+        Each case study covers the problem, the constraints, the system model, the
+        architecture, the accessibility and performance work, and what I would do
+        differently.
+      </p>
+    </header>
+
+    <ol class="work-index__list">
+      @for (project of projects; track project.slug) {
+        <li class="work-index__item">
+          <a class="work-index__link" [routerLink]="'/work/' + project.slug">
+            <span class="work-index__row">
+              <span class="work-index__index num">{{ project.index }}</span>
+
+              <span class="work-index__main">
+                <span class="work-index__name">{{ project.title }}</span>
+                <span class="work-index__subtitle">{{ project.subtitle }}</span>
+              </span>
+
+              <span class="work-index__side">
+                <span class="work-index__year num">{{ project.year }}</span>
+                <span class="work-index__role label">{{ project.role }}</span>
+              </span>
+
+              <span class="work-index__focus">
+                @for (item of project.focus; track item) {
+                  <span class="chip">{{ item }}</span>
+                }
+              </span>
+
+              <span class="work-index__arrow" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </li>
+      }
+    </ol>
+
+    <footer class="work-index__foot">
+      <p class="work-index__note label">
+        Client names, revenue and adoption figures are intentionally absent — nothing
+        here is fabricated. Outcomes are recorded as qualitative observations.
+      </p>
+      <a class="arrow-link" routerLink="/systems">
+        How I build — the engineering manual
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </footer>
+  </div>
+</section>

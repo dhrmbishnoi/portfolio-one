@@ -1,0 +1,75 @@
+{
+  "slug": "frontend-architecture-that-ages-well",
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "Boundaries age better than abstractions"
+    },
+    {
+      "kind": "paragraph",
+      "text": "An abstraction is a bet on the future. You are guessing which axis the product will vary along, and you are paying for that guess in every file that touches it. Boundaries are cheaper. A boundary says what may depend on what, and it keeps saying it long after the bet inside has lost."
+    },
+    {
+      "kind": "paragraph",
+      "text": "In practice this means deciding ownership before deciding structure. If a route owns its state, then unmounting the route destroys the state and its subscriptions. That single rule removes an entire category of bug: the component that keeps updating after the user has navigated away, the service that accumulates listeners, the request that resolves into a destroyed view."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "A feature may depend on core and shared. It may never depend on another feature.",
+        "Feature state is provided at the route, so disposal is automatic.",
+        "Cross-cutting services know about the domain. Features know about the screen.",
+        "The rule is enforced by an import lint check, not by review."
+      ]
+    },
+    {
+      "kind": "note",
+      "label": "Rule",
+      "text": "If you cannot delete a route in one commit without touching another feature, the boundary is in the wrong place."
+    },
+    {
+      "kind": "heading",
+      "text": "Decide who owns the state, then how to store it"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The storage question comes second, and it is much easier once ownership is settled. View state is synchronous, local and disposable — signals are the right shape for it. Server state is shared, concurrent and replayed — it wants a normalised store fed by intents, because two clients will change it at the same time and you need a rule for what happens then. URL state is shareable and restorable, so it belongs to the router."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "ownership.ts",
+      "code": "// View state — synchronous, local, disposable.\nreadonly density = signal<Density>('comfortable');\nreadonly rowHeight = computed(() => DENSITY[this.density()]);\n\n// Server state — shared, concurrent, replayed.\nreadonly plans = this.planStore.plans;\n\n// URL state — shareable, restorable, owned by the router.\nreadonly status = toSignal(\n  this.route.queryParamMap.pipe(map((p) => p.get('status'))),\n);"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The test for ownership is one sentence: if unmounting the route should destroy it, it is feature state; if two clients can change it at once, it belongs in the store. Everything else is a variation on those two cases, and the variations are where most of the confusion lives."
+    },
+    {
+      "kind": "quote",
+      "text": "An architecture that ages well is one where the expensive decisions are still visible to the people who have to live with them.",
+      "attribution": "Working note"
+    },
+    {
+      "kind": "heading",
+      "text": "Make the wrong thing harder than the right thing"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Conventions decay. Lint rules, type constraints and generated documentation do not. If the correct behaviour is the path of least resistance, you get it for free; if it requires remembering, you get it for a quarter and then it is gone."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Required props are required at the type level, not in a doc comment.",
+        "Import direction is a lint error, not a code-review opinion.",
+        "Documentation is generated from the same declarations the build consumes.",
+        "Budgets are configuration read by CI and by the UI, so they cannot disagree."
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "None of this is glamorous. It is also the reason a three-year-old codebase can still be read in an afternoon, which is the only durability metric that has ever mattered to me."
+    }
+  ]
+}

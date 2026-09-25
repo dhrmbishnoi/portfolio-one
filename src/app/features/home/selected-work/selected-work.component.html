@@ -1,0 +1,29 @@
+<section class="work" id="work" aria-labelledby="work-title">
+  <div class="work__inner shell">
+    <header class="work__head">
+      <p class="work__label label">
+        <span class="work__label-rule" aria-hidden="true"></span>
+        Selected work
+      </p>
+      <h2 class="work__title h1" id="work-title">
+        Three projects,<br />
+        three different <em>problems.</em>
+      </h2>
+      <p class="work__lede body-lg">
+        Each one asked for a different kind of frontend work: a dense real-time
+        interface, infrastructure other teams build on, and a tool for measuring
+        the thing itself.
+      </p>
+      <a class="arrow-link work__all" routerLink="/work">
+        All work and case studies
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </header>
+
+    <div class="work__list">
+      <app-project-orbital />
+      <app-project-forge />
+      <app-project-signal />
+    </div>
+  </div>
+</section>

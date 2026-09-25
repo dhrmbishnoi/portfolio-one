@@ -1,0 +1,24 @@
+// ============================================================================
+//  NOAH MERCER — PORTFOLIO
+//  "Technical Editorial Modernism"
+//
+//  Stylesheet entry point. Partials live in src/styles/ and are resolved via
+//  `stylePreprocessorOptions.includePaths` in angular.json.
+//
+//  Fonts are self-hosted through @fontsource: no third-party requests, no
+//  layout-thrashing stylesheet chain, subset delivery handled at build time.
+// ============================================================================
+
+// ---------------------------------------------------------------- typefaces
+@use '@fontsource-variable/inter/wght.css' as *;
+@use '@fontsource-variable/newsreader/wght.css' as *;
+@use '@fontsource-variable/newsreader/wght-italic.css' as *;
+@use '@fontsource/ibm-plex-mono/400.css' as *;
+@use '@fontsource/ibm-plex-mono/500.css' as *;
+
+// ------------------------------------------------------------- foundations
+@use 'tokens';
+@use 'typography';
+@use 'layout';
+@use 'motion';
+@use 'components';

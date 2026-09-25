@@ -1,0 +1,68 @@
+{
+  "slug": "performance-budgets-teams-use",
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "One number, one place, asserted"
+    },
+    {
+      "kind": "paragraph",
+      "text": "A useful budget has three properties. It is small enough to remember. It lives in exactly one file. And the same value is read by the CI assertion and by the interface that displays the measurement, so a red chart and a failed build can never disagree."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "budgets.ts",
+      "code": "export const BUDGETS = {\n  '/': { lcp: 1800, inp: 200, transfer: 120_000 },\n  '/work': { lcp: 1800, inp: 200, transfer: 110_000 },\n  '/work/orbital': { lcp: 2000, inp: 200, transfer: 140_000 },\n  '/systems': { lcp: 1800, inp: 200, transfer: 110_000 },\n} as const satisfies Record<string, Budget>;"
+    },
+    {
+      "kind": "note",
+      "label": "Rule",
+      "text": "If the number in the chart is typed by hand anywhere, it will be wrong within a week. Read it from configuration."
+    },
+    {
+      "kind": "heading",
+      "text": "Budgets are per route, not per application"
+    },
+    {
+      "kind": "paragraph",
+      "text": "An application-level budget is almost always satisfied by the smallest route and violated by the largest, which makes it useless as a signal. Route-level budgets make the number honest: a settings screen that nobody visits should not be allowed to grow, and a flagship route that everybody visits deserves a larger allowance."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Transfer size is asserted on the built chunk, not estimated from source.",
+        "LCP and INP are asserted on measured field data where it exists.",
+        "A route that exceeds its budget fails the build, not the review.",
+        "Budgets are reviewed when the product changes, not when someone complains."
+      ]
+    },
+    {
+      "kind": "heading",
+      "text": "Interaction latency is the budget people forget"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Load time is easy to measure and easy to argue about. Interaction latency is the number users actually feel, and it is the one that regresses silently — usually in a filter, a recomputation or a change-detection path nobody was watching."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "interaction-budget.ts",
+      "code": "// Assert the interaction budget on the path users actually touch.\nconst filterCost = measure(() => this.store.applyFilter(this.filter()));\n\nexpect(filterCost).toBeLessThan(BUDGETS[route].inp);"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The reason this works is not the measurement, it is the conversation. Once the number is in CI, the discussion moves from \"is it fast?\" to \"which recomputation got heavier?\", and that is a question with an answer."
+    },
+    {
+      "kind": "quote",
+      "text": "A budget nobody can check is a slogan. The useful kind is one number, in one place, asserted by the same build that ships the code.",
+      "attribution": "Performance note"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Start with two routes and two numbers. Add more only when a team asks for them, because a budget that nobody has internalised is decoration."
+    }
+  ]
+}
