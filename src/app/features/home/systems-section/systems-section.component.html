@@ -5,11 +5,11 @@
         <span class="systems__label-rule" aria-hidden="true"></span>
         Systems I care about
       </p>
-      <h2 class="systems__title h1" id="systems-title">
+      <h2 class="systems__title h1" id="systems-title" [appReveal]="{ type: 'lines', stagger: 0.08 }">
         The work underneath<br />
         the <em>interface.</em>
       </h2>
-      <p class="systems__lede body-lg">
+      <p class="systems__lede body-lg" [appReveal]="{ type: 'blur', delay: 0.2 }">
         Four areas where the decisions compound. Each one is a system with rules,
         not a skill with a badge.
       </p>
@@ -26,7 +26,7 @@
           <hr class="rule rule--strong systems__rule" data-system-rule />
 
           <div class="systems__entry-grid">
-            <p class="systems__number" aria-hidden="true">{{ entry.index }}</p>
+            <p class="systems__number" aria-hidden="true" [appParallax]="48">{{ entry.index }}</p>
 
             <div class="systems__body">
               <h3 class="systems__entry-title h2">{{ entry.title }}</h3>

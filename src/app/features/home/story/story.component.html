@@ -1,0 +1,85 @@
+<section class="story cinema" id="story" aria-labelledby="story-title">
+  <div class="story__pin" data-story-pin>
+    <div class="story__inner shell">
+      <!-- ------------------------------------------------------------ header -->
+      <header class="story__head" data-story-head>
+        <p class="label story__label">
+          <span class="story__label-rule" aria-hidden="true"></span>
+          The story — four movements
+        </p>
+        <h2 class="story__title h2" id="story-title">
+          How an interface gets built <em>here.</em>
+        </h2>
+      </header>
+
+      <!-- ------------------------------------------------------------ stage -->
+      <div class="story__stage">
+        <span class="story__ghost display-xl" aria-hidden="true" data-story-ghost>{{
+          active().index
+        }}</span>
+
+        <div class="story__chapters" data-story-chapters>
+          @for (chapter of chapters; track chapter.id; let i = $index) {
+            <article
+              class="story__chapter"
+              data-story-chapter
+              [attr.data-index]="i"
+              [attr.aria-hidden]="ready() && activeIndex() !== i ? 'true' : null"
+            >
+              <p class="story__chapter-meta label">
+                <span class="num">Chapter {{ chapter.index }}</span>
+                <span class="story__chapter-slash" aria-hidden="true">/</span>
+                {{ chapter.label }}
+              </p>
+
+              <h3 class="story__chapter-title display">
+                @for (line of lines(chapter.title); track $index) {
+                  <span class="story__chapter-line">{{ line }}</span>
+                }
+              </h3>
+
+              <p class="story__chapter-body body-lg">{{ chapter.body }}</p>
+
+              <ul class="story__points">
+                @for (point of chapter.points; track point) {
+                  <li class="story__point">
+                    <span class="story__point-mark" aria-hidden="true"></span>
+                    {{ point }}
+                  </li>
+                }
+              </ul>
+            </article>
+          }
+        </div>
+
+        <!-- ------------------------------------------------------ instrument -->
+        <aside class="story__meter glass" aria-hidden="true">
+          <p class="story__meter-value num">{{ active().metric.value }}</p>
+          <p class="story__meter-caption label">{{ active().metric.caption }}</p>
+
+          <div class="story__meter-track">
+            @for (chapter of chapters; track chapter.id; let i = $index) {
+              <span
+                class="story__meter-tick"
+                [class.story__meter-tick--active]="activeIndex() >= i"
+              ></span>
+            }
+          </div>
+        </aside>
+      </div>
+
+      <!-- ------------------------------------------------------- progress -->
+      <div class="story__progress" aria-hidden="true">
+        <span class="story__progress-rail">
+          <span class="story__progress-bar" [style.transform]="'scaleX(' + progress() + ')'"></span>
+        </span>
+        <span class="label story__progress-label num"
+          >{{ active().index }} — {{ chapters.length < 10 ? '0' : '' }}{{ chapters.length }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Reduced motion / no JavaScript: the chapters are ordinary stacked
+       documents — the story works as a plain, readable article. -->
+</section>

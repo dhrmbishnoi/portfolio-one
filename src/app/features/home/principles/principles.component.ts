@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
 const PRINCIPLES = [
   {
@@ -41,10 +42,12 @@ const PRINCIPLES = [
 @Component({
   selector: 'app-principles',
   standalone: true,
+  imports: [RevealDirective],
   templateUrl: './principles.component.html',
   styleUrl: './principles.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'on-dark' },
+  // Closes the paper movement: the last daylight frame before the dark close.
+  host: { class: 'on-paper' },
 })
 export class Principles implements OnDestroy {
   protected readonly principles = PRINCIPLES;

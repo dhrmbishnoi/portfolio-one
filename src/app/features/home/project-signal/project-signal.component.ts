@@ -11,6 +11,8 @@ import { RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
 import { SIGNAL_VISUALS, type VitalTrace } from '../../../core/data/projects.data';
 import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
+import { TiltDirective } from '../../../shared/directives/tilt.directive';
 
 /**
  * PROJECT 03 — SIGNAL
@@ -22,7 +24,7 @@ import { MotionService, nextFrame } from '../../../core/services/motion.service'
 @Component({
   selector: 'app-project-signal',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, RevealDirective, TiltDirective],
   templateUrl: './project-signal.component.html',
   styleUrl: './project-signal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,6 +109,12 @@ export class ProjectSignal implements OnDestroy {
       // Performance lines draw themselves in; bars settle; the bundle map
       // segments widen from the left.
       root.querySelectorAll<SVGPathElement>('[data-signal-path]').forEach((path) => {
+        // `getTotalLength` is an SVG geometry API that some environments (and
+        // every non-geometry SVG element) do not implement — the draw-in is an
+        // enhancement, so it is simply skipped when the measurement is missing.
+        if (typeof path.getTotalLength !== 'function') {
+          return;
+        }
         const length = path.getTotalLength();
         gsap.from(path, {
           strokeDasharray: length,

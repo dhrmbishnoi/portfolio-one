@@ -1,0 +1,279 @@
+.story {
+  position: relative;
+  // The pinned stage is exactly one viewport; the scroll distance that plays
+  // the four chapters is added by ScrollTrigger's pin spacing.
+  min-height: 100svh;
+}
+
+.story__pin {
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: calc(var(--header-h) + var(--space-5)) var(--space-6);
+}
+
+.story__inner {
+  display: grid;
+  gap: clamp(1.5rem, 3vh, 2.5rem);
+  width: 100%;
+  // A soft scrim keeps the copy legible over the artifact without turning the
+  // section into a panel.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(120% 80% at 8% 50%, rgba(4, 5, 9, 0.92), transparent 62%),
+      linear-gradient(180deg, rgba(4, 5, 9, 0.75), rgba(4, 5, 9, 0));
+    pointer-events: none;
+  }
+}
+
+// -------------------------------------------------------------------- header
+
+.story__head {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 48rem;
+  will-change: transform, opacity;
+}
+
+.story__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.story__label-rule {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--grad-brand);
+}
+
+.story__title {
+  font-size: var(--step-3);
+}
+
+// --------------------------------------------------------------------- stage
+
+.story__stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+// Ghost chapter number: an oversized numeral the artifact reads through.
+.story__ghost {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  transform: translateY(-50%);
+  z-index: 0;
+  font-size: clamp(9rem, 26vw, 24rem);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(215, 255, 79, 0.35);
+  opacity: 0.08;
+  pointer-events: none;
+  user-select: none;
+}
+
+.story__chapters {
+  position: relative;
+  z-index: 1;
+}
+
+.story__chapter {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 40rem;
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--border);
+  will-change: transform, opacity, filter;
+}
+
+// Motion register: chapters occupy the same box and cross-fade in place.
+.story--motion {
+  .story__pin {
+    height: 100svh;
+  }
+
+  .story__chapters {
+    display: grid;
+    align-items: center;
+    min-height: clamp(24rem, 52vh, 34rem);
+  }
+
+  .story__chapter {
+    grid-area: 1 / 1;
+  }
+}
+
+.story__chapter-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--accent);
+}
+
+.story__chapter-slash {
+  color: var(--fg-muted);
+}
+
+.story__chapter-title {
+  font-size: var(--step-3);
+  max-width: 22ch;
+}
+
+.story__chapter-line {
+  display: block;
+}
+
+.story__chapter-body {
+  max-width: 48ch;
+  color: var(--fg-secondary);
+}
+
+.story__points {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.story__point {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--step--1);
+  color: var(--fg-secondary);
+  max-width: 52ch;
+}
+
+.story__point-mark {
+  width: 6px;
+  height: 1px;
+  background-color: var(--accent);
+  transform: translateY(-0.35em);
+}
+
+// ---------------------------------------------------------------- instrument
+
+.story__meter {
+  display: grid;
+  gap: var(--space-2);
+  align-content: center;
+  justify-items: end;
+  text-align: right;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  min-width: 13rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015)),
+    rgba(8, 10, 16, 0.5);
+}
+
+.story__meter-value {
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+}
+
+.story__meter-caption {
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  max-width: 16ch;
+}
+
+.story__meter-track {
+  display: flex;
+  gap: 4px;
+  margin-top: var(--space-3);
+}
+
+.story__meter-tick {
+  width: 22px;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.14);
+  transition:
+    background-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+
+.story__meter-tick--active {
+  background: var(--grad-brand);
+  box-shadow: 0 0 10px rgba(215, 255, 79, 0.5);
+}
+
+// ------------------------------------------------------------------ progress
+
+.story__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.story__progress-rail {
+  position: relative;
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.story__progress-bar {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  background: var(--grad-brand);
+  will-change: transform;
+}
+
+.story__progress-label {
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
+  .story__stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .story__meter {
+    justify-items: start;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .story__ghost {
+    right: 0;
+    opacity: 0.06;
+  }
+}
+
+@media (max-width: 639px) {
+  // Under 640px the pinned edit is replaced by a plain stacked article: the
+  // story reads better as a document than as a scrub on a phone.
+  .story__chapter {
+    padding-left: var(--space-4);
+    max-width: none;
+  }
+
+  .story__chapters {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .story__ghost {
+    display: none;
+  }
+}

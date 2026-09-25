@@ -12,6 +12,8 @@ import { RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
 import { ORBITAL_VISUALS, type PlanItem, type PlanStatus } from '../../../core/data/projects.data';
 import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
+import { TiltDirective } from '../../../shared/directives/tilt.directive';
 
 const FILTERS: readonly { id: 'all' | PlanStatus; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -31,7 +33,7 @@ const FILTERS: readonly { id: 'all' | PlanStatus; label: string }[] = [
 @Component({
   selector: 'app-project-orbital',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, RevealDirective, TiltDirective],
   templateUrl: './project-orbital.component.html',
   styleUrl: './project-orbital.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,69 +1,63 @@
 .work {
-  padding-block: var(--section-y-tight) var(--section-y);
+  position: relative;
+  padding-block: var(--section-y);
+  background-color: var(--stage);
+}
+
+// A vertical wash behind the case studies: the artifact reads at the edges of
+// the section without ever competing with the project instrumentation.
+.work__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 7, 13, 0.4), rgba(5, 7, 13, 0.92) 12%, rgba(5, 7, 13, 0.92) 88%, rgba(5, 7, 13, 0.4)),
+    radial-gradient(70% 40% at 90% 4%, rgba(124, 92, 255, 0.16), transparent 60%);
+  pointer-events: none;
 }
 
 .work__inner {
+  position: relative;
   display: grid;
-  gap: clamp(3rem, 6vw, 6rem);
+  gap: clamp(3rem, 6vw, 5.5rem);
 }
+
+// ------------------------------------------------------------------- header
 
 .work__head {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gutter);
-  row-gap: var(--space-5);
-  align-items: end;
+  gap: var(--space-5);
+  max-width: 62rem;
 }
 
 .work__label {
-  grid-column: 1 / span 2;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  color: var(--fg-muted);
 }
 
 .work__label-rule {
-  display: block;
-  width: 1.5rem;
+  width: 2.5rem;
   height: 1px;
-  background-color: var(--border-strong);
+  background: var(--grad-brand);
 }
 
 .work__title {
-  grid-column: 3 / span 6;
-  margin: 0;
-}
-
-.work__title em {
-  font-style: italic;
+  font-size: var(--step-4);
+  max-width: 22ch;
 }
 
 .work__lede {
-  grid-column: 3 / span 5;
-  max-width: 44ch;
+  max-width: 52ch;
 }
 
 .work__all {
-  grid-column: 10 / span 3;
-  justify-self: end;
-  align-self: end;
+  justify-self: start;
+  margin-top: var(--space-2);
 }
+
+// --------------------------------------------------------------------- list
 
 .work__list {
   display: grid;
   gap: clamp(4rem, 9vw, 9rem);
-}
-
-@media (max-width: 1023px) {
-  .work__label,
-  .work__title,
-  .work__lede,
-  .work__all {
-    grid-column: 1 / -1;
-  }
-
-  .work__all {
-    justify-self: start;
-  }
 }

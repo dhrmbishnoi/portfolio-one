@@ -1,49 +1,93 @@
 .cta {
-  padding-block: var(--section-y);
-  background-color: var(--dark);
+  position: relative;
+  padding-block: clamp(6rem, 14vh, 12rem) clamp(5rem, 10vh, 9rem);
+  background: linear-gradient(180deg, rgba(5, 7, 13, 0.2), rgba(5, 7, 13, 0.86) 45%);
+}
+
+// The artifact blooms to the horizon here, so the invitation needs its own
+// scrim: the light stays around the words instead of through them.
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 60% at 20% 50%, rgba(5, 7, 13, 0.9), rgba(5, 7, 13, 0.35) 55%, transparent 78%);
+  pointer-events: none;
+}
+
+.cta__inner {
+  position: relative;
 }
 
 .cta__inner {
   display: grid;
   gap: var(--space-6);
+  max-width: 68rem;
 }
 
 .cta__label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  color: var(--fg-muted);
 }
 
 .cta__label-rule {
-  display: block;
-  width: 1.5rem;
+  width: 2.5rem;
   height: 1px;
-  background-color: var(--border-dark-strong);
+  background: var(--grad-brand);
 }
 
 .cta__title {
-  margin: 0;
   display: grid;
-  font-size: var(--step-5);
+  max-width: 26ch;
 }
 
 .cta__line {
   display: block;
+  will-change: transform, opacity;
 }
 
 .cta__line--accent {
-  color: var(--accent);
-  font-style: italic;
+  // The gradient treatment is already applied by `.gradient-text`; this keeps
+  // the last line optically tight against the two above it.
+  padding-bottom: 0.04em;
 }
 
 .cta__copy {
-  max-width: 46ch;
+  max-width: 52ch;
+  margin-top: var(--space-2);
 }
 
 .cta__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-3);
   margin-top: var(--space-3);
+}
+
+.cta__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-faint);
+}
+
+.cta__meta-item {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.cta__meta-item dd {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--fg);
+}
+
+@media (max-width: 767px) {
+  .cta__title {
+    max-width: none;
+  }
 }

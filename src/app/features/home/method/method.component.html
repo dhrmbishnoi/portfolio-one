@@ -1,31 +1,43 @@
-<section class="method" aria-labelledby="method-title">
-  <div class="method__inner shell">
-    <header class="method__head">
-      <p class="method__label label">
-        <span class="method__label-rule" aria-hidden="true"></span>
-        Working method
-      </p>
-      <h2 class="method__title h1" id="method-title">
-        A lifecycle, not a<br />
-        <em>process diagram.</em>
-      </h2>
-    </header>
+<section class="method cinema" id="method" aria-labelledby="method-title">
+  <div class="method__pin" data-method-pin>
+    <div class="method__inner shell">
+      <header class="method__head" data-method-head>
+        <p class="method__label label">
+          <span class="method__label-rule" aria-hidden="true"></span>
+          Working method — 05 stages
+        </p>
 
-    <div class="method__track-wrap">
-      <div class="method__line" aria-hidden="true" data-method-line></div>
+        <h2 class="method__title h1" id="method-title" [appReveal]="{ type: 'lines', stagger: 0.08 }">
+          A lifecycle, not a <em>process diagram.</em>
+        </h2>
 
-      <ol class="method__track">
-        @for (stage of stages; track stage.id; let i = $index) {
-          <li class="method__stage" data-method-stage>
-            <p class="method__stage-index label" aria-hidden="true">0{{ i + 1 }}</p>
-            <h3 class="method__stage-title h3">{{ stage.title }}</h3>
-            <p class="method__stage-body small">{{ stage.body }}</p>
-            @if (i < stages.length - 1) {
-              <span class="method__arrow" aria-hidden="true">↓</span>
-            }
-          </li>
-        }
-      </ol>
+        <p class="method__hint label" data-method-hint>
+          <span class="method__hint-mark" aria-hidden="true">→</span>
+          Scroll to move through the stages
+        </p>
+      </header>
+
+      <div class="method__viewport" data-method-viewport>
+        <ol class="method__track" data-method-track>
+          @for (stage of stages; track stage.id; let i = $index) {
+            <li class="method__stage" data-method-stage [attr.data-index]="i">
+              <span class="method__stage-index num" aria-hidden="true">0{{ i + 1 }}</span>
+              <h3 class="method__stage-title h2">{{ stage.title }}</h3>
+              <p class="method__stage-body body">{{ stage.body }}</p>
+              <span class="method__stage-arrow" aria-hidden="true">→</span>
+            </li>
+          }
+        </ol>
+      </div>
+
+      <div class="method__progress" aria-hidden="true">
+        <span class="method__progress-rail">
+          <span class="method__progress-bar" [style.transform]="'scaleX(' + progress() + ')'"></span>
+        </span>
+        <span class="label method__progress-label num">
+          {{ activeStage() }}/{{ stages.length }}
+        </span>
+      </div>
     </div>
   </div>
 </section>

@@ -6,13 +6,13 @@
         Engineering principles
       </p>
 
-      <h2 class="principles__title display" id="principles-title">
+      <h2 class="principles__title display" id="principles-title" [appReveal]="{ type: 'lines', stagger: 0.075 }">
         Good frontend work<br />
         should disappear<br />
         into the <em>product.</em>
       </h2>
 
-      <p class="principles__lede body-lg">
+      <p class="principles__lede body-lg" [appReveal]="{ type: 'blur', delay: 0.25 }">
         Users should notice clarity, speed and confidence — not the complexity
         required to create them.
       </p>
@@ -20,7 +20,7 @@
 
     <ul class="principles__list">
       @for (principle of principles; track principle.id; let i = $index) {
-        <li class="principles__item" data-principle-line>
+        <li class="principles__item" data-principle-line [appReveal]="{ type: 'rise', stagger: 0.08 }">
           <p class="principles__index label" aria-hidden="true">0{{ i + 1 }}</p>
           <h3 class="principles__item-title h4">{{ principle.title }}</h3>
           <p class="principles__item-body small">{{ principle.body }}</p>
