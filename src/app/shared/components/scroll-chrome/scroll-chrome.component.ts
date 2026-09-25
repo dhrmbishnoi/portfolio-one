@@ -127,6 +127,7 @@ export class ScrollChrome {
   }
 
   protected goTo(id: string): void {
-    this.scroll.scrollTo(`#${id}`, -8);
+    // The scroller applies the header offset itself.
+    this.scroll.scrollTo(`#${id}`);
   }
 }

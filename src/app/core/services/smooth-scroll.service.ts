@@ -94,19 +94,41 @@ export class SmoothScrollService {
     this.destroyRef.onDestroy(() => this.destroy());
   }
 
-  /** Smoothly scroll to an element, a position, or a named anchor. */
-  scrollTo(target: string | HTMLElement | number, offset = 0): void {
+  /**
+   * Height of the fixed header, read from the stylesheet rather than guessed,
+   * so an anchor never lands with its heading tucked under the chrome.
+   */
+  private headerOffset(): number {
+    if (typeof window === 'undefined') {
+      return 0;
+    }
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+    const rem = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const value = Number.parseFloat(raw);
+    if (!Number.isFinite(value)) {
+      return 0;
+    }
+    return value * (raw.endsWith('rem') ? rem : 1);
+  }
+
+  /**
+   * Smoothly scroll to an element, a position, or a named anchor. Any offset is
+   * measured from the top of the viewport, so the header is cleared by default.
+   */
+  scrollTo(target: string | HTMLElement | number, offset?: number): void {
+    const landing = offset ?? -(this.headerOffset() + 12);
+
     if (!this.lenis) {
       const element =
         typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target;
       if (typeof element === 'number') {
-        window.scrollTo({ top: element, behavior: 'smooth' });
+        window.scrollTo({ top: element + landing, behavior: 'smooth' });
       } else {
         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       return;
     }
-    this.lenis.scrollTo(target, { offset, duration: 1.4 });
+    this.lenis.scrollTo(target, { offset: landing, duration: 1.4 });
   }
 
   /** Freeze the document — used while the mobile menu panel is open. */
