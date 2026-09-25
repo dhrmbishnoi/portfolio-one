@@ -1,0 +1,109 @@
+<section class="about" aria-labelledby="about-title">
+  <div class="about__inner shell">
+    <header class="about__head">
+      <p class="about__label label">
+        <span class="about__label-rule" aria-hidden="true"></span>
+        About
+      </p>
+      <h1 class="about__title display" id="about-title">
+        I work between<br />
+        design decisions<br />
+        and engineering <em>systems.</em>
+      </h1>
+      <p class="about__lede body-lg">
+        Seven years of building frontends for products that had to keep working after
+        the launch post. The interesting problems are never in the first release — they
+        are in the third year, when the team has changed and the requirements have moved
+        twice.
+      </p>
+    </header>
+
+    <div class="about__columns">
+      <div class="about__prose prose">
+        <p>
+          I am a frontend engineer who spends most of the time on the parts of the work
+          that users never see: the boundary between two features, the owner of a piece of
+          state, the reason a component exposes the API it does.
+        </p>
+        <p>
+          That preference came from working on products that outlived their original
+          architecture. When a codebase is still being changed two years later, the
+          decisions that matter are the ones about <strong>ownership and boundaries</strong>
+          — not the ones about which library to pick.
+        </p>
+        <p>
+          I work remotely, and I work best with a small product team where design and
+          engineering are in the same conversation from the beginning. I would rather shape
+          an interaction model with a designer than review a finished spec against what the
+          framework can actually do.
+        </p>
+        <p>
+          The rest of this page is the set of positions I keep arriving back at. They are
+          opinions, held loosely, revised often.
+        </p>
+      </div>
+
+      <aside class="about__card" aria-label="At a glance">
+        <p class="label about__card-title">At a glance</p>
+        <dl class="meta">
+          <div class="meta__row">
+            <dt class="meta__key">Role</dt>
+            <dd class="meta__value">{{ site.identity.role }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Experience</dt>
+            <dd class="meta__value num">{{ site.identity.experience }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Location</dt>
+            <dd class="meta__value">{{ site.identity.location }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Availability</dt>
+            <dd class="meta__value">{{ site.identity.availability }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Primary stack</dt>
+            <dd class="meta__value">Angular · TypeScript · SCSS · GSAP</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Email</dt>
+            <dd class="meta__value">
+              <a class="link" [href]="site.contact.mailto">{{ site.contact.email }}</a>
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <div class="about__approaches">
+      <h2 class="about__approaches-title h2">How I think about the work</h2>
+      <ol class="about__list">
+        @for (approach of approaches; track approach.id) {
+          <li class="about__item">
+            <p class="about__item-index num" aria-hidden="true">{{ approach.index }}</p>
+            <div class="about__item-body">
+              <h3 class="about__item-title h4">{{ approach.title }}</h3>
+              <p class="about__item-text">{{ approach.body }}</p>
+              <ul class="about__item-evidence">
+                @for (item of approach.evidence; track item) {
+                  <li class="label">{{ item }}</li>
+                }
+              </ul>
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <footer class="about__foot">
+      <p class="about__foot-text body-lg">
+        If that sounds like the way your team works, the next step is a conversation.
+      </p>
+      <a class="btn" routerLink="/contact">
+        Start a conversation
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </footer>
+  </div>
+</section>

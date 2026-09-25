@@ -1,0 +1,31 @@
+<section class="method" aria-labelledby="method-title">
+  <div class="method__inner shell">
+    <header class="method__head">
+      <p class="method__label label">
+        <span class="method__label-rule" aria-hidden="true"></span>
+        Working method
+      </p>
+      <h2 class="method__title h1" id="method-title">
+        A lifecycle, not a<br />
+        <em>process diagram.</em>
+      </h2>
+    </header>
+
+    <div class="method__track-wrap">
+      <div class="method__line" aria-hidden="true" data-method-line></div>
+
+      <ol class="method__track">
+        @for (stage of stages; track stage.id; let i = $index) {
+          <li class="method__stage" data-method-stage>
+            <p class="method__stage-index label" aria-hidden="true">0{{ i + 1 }}</p>
+            <h3 class="method__stage-title h3">{{ stage.title }}</h3>
+            <p class="method__stage-body small">{{ stage.body }}</p>
+            @if (i < stages.length - 1) {
+              <span class="method__arrow" aria-hidden="true">↓</span>
+            }
+          </li>
+        }
+      </ol>
+    </div>
+  </div>
+</section>

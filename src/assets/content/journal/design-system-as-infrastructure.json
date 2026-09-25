@@ -1,0 +1,69 @@
+{
+  "slug": "design-system-as-infrastructure",
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "Three layers, one public surface"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The token model does most of the work. Primitives are raw scales and are private. Semantic aliases name intent — fg.default, accent.interactive, control.gap — and are the only layer product code may import. Component tokens are owned by a component and are the sanctioned override point for a theme."
+    },
+    {
+      "kind": "code",
+      "language": "scss",
+      "filename": "token-layers.scss",
+      "code": "// 1 · primitives — private, never imported by product code\n$gray-900: #141414;\n$lime-400: #d9ff57;\n\n// 2 · semantic aliases — the public API\n:root {\n  --fg-default: #{$gray-900};\n  --accent-interactive: #{$lime-400};\n  --control-gap: 1rem;\n}\n\n// 3 · component tokens — the override point\nforge-button {\n  --button-focus-ring: var(--accent-interactive);\n  --button-gap: 0.5rem;\n}"
+    },
+    {
+      "kind": "note",
+      "label": "Why",
+      "text": "A flat token file with naming conventions decays within two quarters. A hard import rule, enforced by lint, survives a rebrand and is legible to a new joiner in an afternoon."
+    },
+    {
+      "kind": "heading",
+      "text": "Own the behaviour, not just the pixels"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The second half of infrastructure is the accessibility contract. If a component ships its own roles, accessible names, keyboard behaviour and live-region expectations, the correct behaviour becomes the path of least resistance. If it documents them instead, you get correct behaviour in the teams that remember."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Icon-only controls derive their accessible name inside the component.",
+        "State changes are announced through a component-owned live region.",
+        "Focus rings are specified on every control and never removed.",
+        "Hit areas are enforced at the component, independent of visual size.",
+        "Reduced motion is handled in the component so consumers cannot forget."
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "This is also what turns an accessibility audit from a per-product exercise into a review of the library. One fix, four products, no tickets."
+    },
+    {
+      "kind": "heading",
+      "text": "Governance is a cost model"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Adoption is not a communication problem, it is an economics problem. Teams diverge when diverging is cheaper than adopting — when the upgrade path is unclear, when a breaking change has no codemod, or when the library is versioned on someone else's release train."
+    },
+    {
+      "kind": "code",
+      "language": "bash",
+      "filename": "terminal",
+      "code": "# Version independently, ship codemods with breaking changes.\nnpx forge-codemod density-tokens@2 ./src\n\n# Assert the import rule instead of reviewing it.\nnpx ng lint --rule no-primitive-imports\n\n# Generate docs from the same declarations the build consumes.\nnpx forge-docs --types ./projects/ui/src"
+    },
+    {
+      "kind": "quote",
+      "text": "Nobody adopts a design system because it is good. They adopt it because it is the cheapest way to ship the thing they were going to build anyway.",
+      "attribution": "Governance note"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The measurable signal that a system has become infrastructure is unglamorous: pull requests stop discussing which button to use. That is the point at which the system is doing its job, and the point at which you can start spending your attention on the product again."
+    }
+  ]
+}

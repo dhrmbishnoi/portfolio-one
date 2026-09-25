@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#ECE9E2" />
+  <g stroke="#141414" stroke-opacity="0.14">
+    <path d="M0 1 H1200" />
+    <path d="M0 629 H1200" />
+  </g>
+
+  <text
+    x="96"
+    y="150"
+    font-family="'IBM Plex Mono', monospace"
+    font-size="20"
+    letter-spacing="3.2"
+    fill="#87837C"
+  >SENIOR FRONTEND / PRODUCT ENGINEER</text>
+
+  <g font-family="'Newsreader', Georgia, serif" fill="#141414" font-size="86" letter-spacing="-2.6">
+    <text x="96" y="300">Engineering interfaces</text>
+    <text x="96" y="396">for products that</text>
+    <text x="96" y="492" font-style="italic">need to last.</text>
+  </g>
+
+  <rect x="96" y="512" width="352" height="6" fill="#D9FF57" />
+
+  <text
+    x="96"
+    y="578"
+    font-family="'IBM Plex Mono', monospace"
+    font-size="18"
+    letter-spacing="2.4"
+    fill="#625F59"
+  >NOAH MERCER · REMOTE · 7+ YEARS</text>
+
+  <g stroke="#141414" stroke-opacity="0.14">
+    <path d="M96 210 H1104" />
+  </g>
+</svg>

@@ -1,0 +1,87 @@
+<section class="contact" aria-labelledby="contact-title">
+  <div class="contact__inner shell">
+    <header class="contact__head">
+      <p class="contact__label label">
+        <span class="contact__label-rule" aria-hidden="true"></span>
+        Contact
+      </p>
+
+      <h1 class="contact__title display" id="contact-title">
+        <span class="contact__line">Building something</span>
+        <span class="contact__line">that deserves</span>
+        <span class="contact__line contact__line--accent">care?</span>
+      </h1>
+
+      <p class="contact__copy body-lg">
+        I’m interested in product teams that value thoughtful frontend architecture,
+        strong interaction design and long-term quality.
+      </p>
+    </header>
+
+    <div class="contact__actions">
+      <a class="btn contact__cta" [href]="site.contact.mailto">
+        Start a conversation
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <p class="contact__note small">
+        Currently {{ site.identity.availability.toLowerCase() }}. A short description of the
+        product and the problem is enough to start.
+      </p>
+    </div>
+
+    <ul class="contact__channels">
+      <li class="contact__channel">
+        <p class="label contact__channel-key">Email</p>
+        <a class="contact__channel-value link" [href]="site.contact.mailto">
+          {{ site.contact.email }}
+        </a>
+      </li>
+      <li class="contact__channel">
+        <p class="label contact__channel-key">LinkedIn</p>
+        <a
+          class="contact__channel-value link"
+          [href]="site.contact.linkedin"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {{ site.contact.linkedin.replace('https://', '') }}
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </li>
+      <li class="contact__channel">
+        <p class="label contact__channel-key">GitHub</p>
+        <a
+          class="contact__channel-value link"
+          [href]="site.contact.github"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {{ site.contact.github.replace('https://', '') }}
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </li>
+    </ul>
+
+    <footer class="contact__foot">
+      <dl class="contact__facts">
+        <div class="contact__fact">
+          <dt class="label">Location</dt>
+          <dd class="mono">{{ site.identity.location }}</dd>
+        </div>
+        <div class="contact__fact">
+          <dt class="label">Experience</dt>
+          <dd class="mono">{{ site.identity.experience }}</dd>
+        </div>
+        <div class="contact__fact">
+          <dt class="label">Availability</dt>
+          <dd class="mono">{{ site.identity.availability }}</dd>
+        </div>
+      </dl>
+
+      <p class="contact__status status">
+        <span class="status__dot" aria-hidden="true"></span>
+        {{ site.identity.availability }}
+      </p>
+    </footer>
+  </div>
+</section>

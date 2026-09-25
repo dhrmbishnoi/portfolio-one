@@ -1,0 +1,205 @@
+<figure class="td">
+  @if (label()) {
+    <figcaption class="td__head">
+      <span class="label">{{ label() }}</span>
+      <span class="label td__kind">{{ kind() }}</span>
+    </figcaption>
+  }
+
+  <div class="td__canvas">
+    @switch (kind()) {
+      @case ('architecture-map') {
+        <svg viewBox="0 0 360 220" role="img" [attr.aria-label]="caption() || 'Architecture map'">
+          <g class="td__edges">
+            <path d="M180 34 V 62" />
+            <path d="M180 62 H 62 V 90" />
+            <path d="M180 62 H 180 V 90" />
+            <path d="M180 62 H 298 V 90" />
+            <path d="M62 122 V 152" />
+            <path d="M180 122 V 152" />
+            <path d="M298 122 V 152" />
+            <path d="M100 122 V 152" />
+            <path d="M262 122 V 152" />
+          </g>
+          <g class="td__nodes">
+            <rect x="104" y="8" width="152" height="26" rx="0" />
+            <text x="180" y="25" text-anchor="middle">APP SHELL</text>
+
+            <rect x="96" y="62" width="168" height="28" rx="0" />
+            <text x="180" y="80" text-anchor="middle">ROUTES · LAZY CHUNKS</text>
+
+            <rect x="16" y="90" width="92" height="32" />
+            <text x="62" y="110" text-anchor="middle">HOME</text>
+            <rect x="134" y="90" width="92" height="32" />
+            <text x="180" y="110" text-anchor="middle">WORK</text>
+            <rect x="252" y="90" width="92" height="32" />
+            <text x="298" y="110" text-anchor="middle">SYSTEMS</text>
+
+            <rect x="16" y="152" width="84" height="26" class="td__node--core" />
+            <text x="58" y="169" text-anchor="middle">CORE</text>
+            <rect x="70" y="152" width="84" height="26" class="td__node--shared" />
+            <text x="112" y="169" text-anchor="middle">SHARED</text>
+            <rect x="152" y="152" width="84" height="26" class="td__node--core" />
+            <text x="194" y="169" text-anchor="middle">CORE</text>
+            <rect x="238" y="152" width="84" height="26" class="td__node--shared" />
+            <text x="280" y="169" text-anchor="middle">SHARED</text>
+          </g>
+          <g class="td__annot">
+            <text x="16" y="200">one-way dependency</text>
+            <text x="16" y="214">features never reach sideways</text>
+          </g>
+        </svg>
+      }
+
+      @case ('dependency-graph') {
+        <svg viewBox="0 0 360 200" role="img" [attr.aria-label]="caption() || 'Dependency graph'">
+          <g class="td__edges">
+            <path d="M180 30 V 58" />
+            <path d="M180 58 C 180 78, 90 78, 90 96" />
+            <path d="M180 58 C 180 78, 180 78, 180 96" />
+            <path d="M180 58 C 180 78, 270 78, 270 96" />
+            <path d="M90 130 V 156" />
+            <path d="M180 130 V 156" />
+            <path d="M270 130 V 156" />
+          </g>
+          <g class="td__nodes">
+            <rect x="104" y="6" width="152" height="24" />
+            <text x="180" y="22" text-anchor="middle">ROUTE SHELL</text>
+
+            <rect x="30" y="96" width="120" height="34" />
+            <text x="90" y="117" text-anchor="middle">PLANNING</text>
+            <rect x="120" y="96" width="120" height="34" />
+            <text x="180" y="117" text-anchor="middle">SETTINGS</text>
+            <rect x="210" y="96" width="120" height="34" />
+            <text x="270" y="117" text-anchor="middle">INSIGHTS</text>
+
+            <rect x="46" y="156" width="88" height="24" class="td__node--core" />
+            <text x="90" y="172" text-anchor="middle">CORE</text>
+            <rect x="136" y="156" width="88" height="24" class="td__node--shared" />
+            <text x="180" y="172" text-anchor="middle">SHARED</text>
+            <rect x="226" y="156" width="88" height="24" class="td__node--core" />
+            <text x="270" y="172" text-anchor="middle">CORE</text>
+          </g>
+        </svg>
+      }
+
+      @case ('token-graph') {
+        <svg viewBox="0 0 360 210" role="img" [attr.aria-label]="caption() || 'Token graph'">
+          <g class="td__edges">
+            <path d="M62 46 V 92" />
+            <path d="M62 92 H 168 V 96" />
+            <path d="M62 92 H 168 V 100" />
+            <path d="M180 46 V 92" />
+            <path d="M180 92 H 168 V 96" />
+            <path d="M298 46 V 92" />
+            <path d="M298 92 H 192 V 96" />
+            <path d="M168 140 V 168" />
+            <path d="M192 140 V 168" />
+          </g>
+          <g class="td__nodes">
+            <rect x="20" y="16" width="84" height="30" class="td__node--primitive" />
+            <text x="62" y="35" text-anchor="middle">gray.900</text>
+            <rect x="138" y="16" width="84" height="30" class="td__node--primitive" />
+            <text x="180" y="35" text-anchor="middle">gray.500</text>
+            <rect x="256" y="16" width="84" height="30" class="td__node--primitive" />
+            <text x="298" y="35" text-anchor="middle">lime.400</text>
+
+            <rect x="112" y="96" width="136" height="30" class="td__node--alias" />
+            <text x="180" y="115" text-anchor="middle">fg.default</text>
+
+            <rect x="112" y="168" width="60" height="26" class="td__node--component" />
+            <text x="142" y="185" text-anchor="middle">label</text>
+            <rect x="188" y="168" width="60" height="26" class="td__node--component" />
+            <text x="218" y="185" text-anchor="middle">focusRing</text>
+          </g>
+          <g class="td__annot">
+            <text x="20" y="200">primitive → alias → component</text>
+          </g>
+        </svg>
+      }
+
+      @case ('state-flow') {
+        <svg viewBox="0 0 360 190" role="img" [attr.aria-label]="caption() || 'State flow'">
+          <g class="td__edges">
+            <path d="M74 44 V 74" />
+            <path d="M180 44 V 74" />
+            <path d="M286 44 V 74" />
+            <path d="M180 108 V 138" />
+          </g>
+          <g class="td__nodes">
+            <rect x="14" y="14" width="120" height="30" />
+            <text x="74" y="33" text-anchor="middle">INTENT</text>
+            <rect x="120" y="14" width="120" height="30" />
+            <text x="180" y="33" text-anchor="middle">REDUCER</text>
+            <rect x="226" y="14" width="120" height="30" />
+            <text x="286" y="33" text-anchor="middle">SIGNAL</text>
+
+            <rect x="60" y="74" width="240" height="34" class="td__node--core" />
+            <text x="180" y="95" text-anchor="middle">NORMALISED STORE</text>
+
+            <rect x="60" y="138" width="110" height="30" class="td__node--shared" />
+            <text x="115" y="157" text-anchor="middle">VIEW STATE</text>
+            <rect x="190" y="138" width="110" height="30" class="td__node--shared" />
+            <text x="245" y="157" text-anchor="middle">DERIVED</text>
+          </g>
+          <g class="td__annot">
+            <text x="60" y="184">streams end at the store · signals start at the store</text>
+          </g>
+        </svg>
+      }
+
+      @case ('performance-trace') {
+        <svg viewBox="0 0 360 150" role="img" [attr.aria-label]="caption() || 'Performance trace'">
+          <g class="td__grid">
+            <path d="M28 20 H 344" />
+            <path d="M28 60 H 344" />
+            <path d="M28 100 H 344" />
+            <path d="M28 128 H 344" />
+          </g>
+          <path class="td__budget" d="M28 44 H 344" />
+          <path
+            class="td__trace"
+            d="M28 100 L 53 96 L 78 104 L 103 88 L 128 90 L 153 78 L 178 74 L 203 68 L 228 62 L 253 58 L 278 52 L 303 46 L 328 40"
+          />
+          <path
+            class="td__trace td__trace--alt"
+            d="M28 116 L 53 112 L 78 118 L 103 106 L 128 108 L 153 98 L 178 94 L 203 88 L 228 82 L 253 78 L 278 72 L 303 66 L 328 60"
+          />
+          <g class="td__annot">
+            <text x="28" y="146">budget</text>
+            <text x="300" y="146">route · p95</text>
+          </g>
+        </svg>
+      }
+
+      @case ('viewport-grid') {
+        <svg viewBox="0 0 360 150" role="img" [attr.aria-label]="caption() || 'Viewport grid'">
+          <g class="td__cols">
+            @for (i of columns; track i) {
+              <rect [attr.x]="28 + i * 26" y="18" width="24" height="86" />
+            }
+          </g>
+          <g class="td__edges">
+            <path d="M28 116 H 332" />
+            <path d="M28 116 V 122" />
+            <path d="M100 116 V 122" />
+            <path d="M180 116 V 122" />
+            <path d="M256 116 V 122" />
+            <path d="M332 116 V 122" />
+          </g>
+          <g class="td__annot">
+            <text x="28" y="140">390</text>
+            <text x="100" y="140">768</text>
+            <text x="180" y="140">1024</text>
+            <text x="256" y="140">1440</text>
+            <text x="318" y="140">1920</text>
+          </g>
+        </svg>
+      }
+    }
+  </div>
+
+  @if (caption()) {
+    <p class="td__caption label">{{ caption() }}</p>
+  }
+</figure>

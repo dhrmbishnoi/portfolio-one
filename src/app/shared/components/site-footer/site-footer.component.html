@@ -1,0 +1,60 @@
+<footer class="footer" aria-labelledby="footer-heading">
+  <h2 id="footer-heading" class="visually-hidden">Site footer</h2>
+
+  <div class="footer__rule" aria-hidden="true"></div>
+
+  <div class="footer__inner shell">
+    <div class="footer__identity">
+      <p class="footer__mark" aria-hidden="true">{{ site.identity.monogram }}</p>
+      <p class="footer__name">{{ site.identity.name }}</p>
+      <p class="footer__role label">{{ site.identity.roleShort }}</p>
+      <p class="footer__meta label">
+        {{ site.identity.experience }} · {{ site.identity.location }}
+      </p>
+    </div>
+
+    <nav class="footer__nav" aria-label="Footer">
+      <p class="label footer__heading">Navigation</p>
+      <ul class="footer__list">
+        @for (item of site.footerNav; track item.path) {
+          <li>
+            <a
+              class="link link--muted"
+              [routerLink]="item.path"
+              routerLinkActive="footer__link--active"
+              [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+              >{{ item.label }}</a
+            >
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="footer__external">
+      <p class="label footer__heading">Elsewhere</p>
+      <ul class="footer__list">
+        @for (link of site.externalLinks; track link.href) {
+          <li>
+            <a class="link link--muted" [href]="link.href" [attr.target]="isExternal(link.href) ? '_blank' : null" [attr.rel]="isExternal(link.href) ? 'noreferrer noopener' : null">
+              {{ link.label }}
+              @if (isExternal(link.href)) {
+                <span class="arrow" aria-hidden="true">↗</span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="footer__end">
+      <p class="label footer__heading">Top</p>
+      <button type="button" class="footer__top" (click)="backToTop()">
+        <span>Back to top</span>
+        <span class="arrow" aria-hidden="true">↑</span>
+      </button>
+      <p class="footer__copy label">
+        © {{ year }} {{ site.copyrightHolder }}
+      </p>
+    </div>
+  </div>
+</footer>

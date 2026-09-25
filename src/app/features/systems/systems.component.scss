@@ -1,0 +1,211 @@
+.manual {
+  padding-block: clamp(3rem, 7vh, 6rem) var(--section-y);
+}
+
+.manual__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(3rem, 6vw, 5rem);
+}
+
+// ------------------------------------------------------------------- head
+
+.manual__head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-5);
+  align-items: end;
+}
+
+.manual__label {
+  grid-column: 1 / span 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg-muted);
+}
+
+.manual__label-rule {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background-color: var(--border-strong);
+}
+
+.manual__title {
+  grid-column: 4 / span 8;
+  margin: 0;
+  font-size: var(--step-5);
+}
+
+.manual__title em {
+  font-style: italic;
+}
+
+.manual__lede {
+  grid-column: 4 / span 6;
+  max-width: 52ch;
+}
+
+// ------------------------------------------------------------------- body
+
+.manual__body {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  column-gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: start;
+}
+
+.manual__rail-title {
+  color: var(--fg-muted);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.manual__rail-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manual__rail-item {
+  border-bottom: 1px solid var(--rule);
+}
+
+.manual__rail-link {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-block: var(--space-3);
+  color: var(--fg-secondary);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.manual__rail-link:hover {
+  color: var(--fg);
+}
+
+.manual__rail-index {
+  color: var(--accent-dark);
+}
+
+.manual__rail-label {
+  font-size: var(--step--1);
+  line-height: 1.35;
+}
+
+// --------------------------------------------------------------- content
+
+.manual__content {
+  display: grid;
+  gap: clamp(3.5rem, 7vw, 6rem);
+}
+
+.manual__section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  scroll-margin-top: calc(var(--header-h) + var(--space-6));
+}
+
+.manual__section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.manual__section-index {
+  color: var(--accent-dark);
+}
+
+.manual__section-title {
+  margin: 0;
+}
+
+.manual__section-lede {
+  max-width: 46ch;
+}
+
+.manual__section .prose {
+  max-width: 68ch;
+}
+
+.manual__bullets {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 68ch;
+}
+
+.manual__bullet {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--fg-secondary);
+}
+
+.manual__bullet-marker {
+  width: 0.6rem;
+  height: 1px;
+  background-color: var(--accent-dark);
+  transform: translateY(-0.35em);
+}
+
+.manual__figure {
+  margin: 0;
+  max-width: 60rem;
+}
+
+// ------------------------------------------------------------------- foot
+
+.manual__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-strong);
+}
+
+.manual__foot-note {
+  color: var(--fg-muted);
+}
+
+// ------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
+  .manual__label,
+  .manual__title,
+  .manual__lede {
+    grid-column: 1 / -1;
+  }
+
+  .manual__body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-7);
+  }
+
+  .manual__rail-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-5);
+  }
+}
+
+@media (max-width: 599px) {
+  .manual__rail-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

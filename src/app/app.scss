@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1 1 auto;
+
+  // The skip-link target must never show a focus ring of its own.
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}

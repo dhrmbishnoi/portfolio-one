@@ -1,0 +1,288 @@
+@if (project(); as study) {
+  <article class="case" [attr.data-project]="study.slug">
+    <!-- ------------------------------------------------------------- masthead -->
+    <header class="case__masthead">
+      <div class="case__masthead-inner shell">
+        <p class="case__crumb label">
+          <a class="link link--muted" routerLink="/work">Selected work</a>
+          <span aria-hidden="true">/</span>
+          <span>{{ study.index }}</span>
+        </p>
+
+        <div class="case__masthead-grid">
+          <h1 class="case__title display">{{ study.title }}</h1>
+          <p class="case__subtitle h3">{{ study.subtitle }}</p>
+        </div>
+
+        <dl class="case__facts meta">
+          <div class="meta__row">
+            <dt class="meta__key">Year</dt>
+            <dd class="meta__value num">{{ study.year }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Role</dt>
+            <dd class="meta__value">{{ study.role }}</dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Focus</dt>
+            <dd class="meta__value">
+              <span class="case__chips">
+                @for (item of study.focus; track item) {
+                  <span class="chip">{{ item }}</span>
+                }
+              </span>
+            </dd>
+          </div>
+          <div class="meta__row">
+            <dt class="meta__key">Technology</dt>
+            <dd class="meta__value">
+              <span class="case__stack">
+                @for (item of study.stack; track item) {
+                  <span class="case__stack-item mono">{{ item }}</span>
+                }
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </header>
+
+    <!-- ----------------------------------------------------------------- body -->
+    <div class="case__body shell">
+      <!-- sticky index -->
+      <nav class="case__rail rail" aria-label="Case study sections">
+        <p class="case__rail-title label">Contents</p>
+        <ol class="case__rail-list">
+          @for (section of sections; track section.id; let i = $index) {
+            <li class="case__rail-item">
+              <a
+                class="case__rail-link"
+                [href]="'#' + section.id"
+                [class.case__rail-link--current]="i === 0"
+              >
+                <span class="case__rail-index label" aria-hidden="true">{{ i + 1 }}</span>
+                <span class="case__rail-label">{{ section.label }}</span>
+              </a>
+            </li>
+          }
+        </ol>
+      </nav>
+
+      <div class="case__prose">
+        <!-- overview -->
+        <section class="case__section" id="overview" aria-labelledby="overview-title">
+          <p class="case__section-index label">01</p>
+          <h2 class="case__section-title h2" id="overview-title">Overview</h2>
+          <div class="prose">
+            @for (paragraph of study.overview; track paragraph) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
+        </section>
+
+        <!-- problem -->
+        <section class="case__section" id="problem" aria-labelledby="problem-title">
+          <p class="case__section-index label">02</p>
+          <h2 class="case__section-title h2" id="problem-title">Problem</h2>
+          <div class="prose">
+            <p>{{ study.problem }}</p>
+          </div>
+        </section>
+
+        <!-- constraints -->
+        <section class="case__section" id="constraints" aria-labelledby="constraints-title">
+          <p class="case__section-index label">03</p>
+          <h2 class="case__section-title h2" id="constraints-title">Constraints</h2>
+          <ul class="case__list">
+            @for (constraint of study.constraints; track constraint) {
+              <li class="case__list-item">{{ constraint }}</li>
+            }
+          </ul>
+        </section>
+
+        <!-- system model -->
+        <section class="case__section" id="system-model" aria-labelledby="system-model-title">
+          <p class="case__section-index label">04</p>
+          <h2 class="case__section-title h2" id="system-model-title">System model</h2>
+          <div class="prose">
+            @for (paragraph of study.systemModel; track paragraph) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
+          <figure class="case__figure">
+            <app-technical-diagram
+              [kind]="study.diagrams[0].kind"
+              [caption]="study.diagrams[0].caption"
+              [label]="study.slug + ' · fig. 1'"
+            />
+          </figure>
+        </section>
+
+        <!-- architecture -->
+        <section class="case__section" id="architecture" aria-labelledby="architecture-title">
+          <p class="case__section-index label">05</p>
+          <h2 class="case__section-title h2" id="architecture-title">Architecture</h2>
+          <div class="prose">
+            @for (paragraph of study.architecture; track paragraph) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
+          @if (study.diagrams[1]) {
+            <figure class="case__figure">
+              <app-technical-diagram
+                [kind]="study.diagrams[1].kind"
+                [caption]="study.diagrams[1].caption"
+                [label]="study.slug + ' · fig. 2'"
+              />
+            </figure>
+          }
+          <ul class="case__annotations">
+            @for (item of study.technicalFocus; track item) {
+              <li class="annotation">
+                <span class="annotation__marker" aria-hidden="true"></span>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- ui decisions -->
+        <section class="case__section" id="ui-decisions" aria-labelledby="ui-decisions-title">
+          <p class="case__section-index label">06</p>
+          <h2 class="case__section-title h2" id="ui-decisions-title">UI decisions</h2>
+          <ol class="case__numbered">
+            @for (decision of study.uiDecisions; track decision; let i = $index) {
+              <li class="case__numbered-item">
+                <span class="case__numbered-index label" aria-hidden="true">{{
+                  (i + 1).toString().padStart(2, '0')
+                }}</span>
+                <span>{{ decision }}</span>
+              </li>
+            }
+          </ol>
+        </section>
+
+        <!-- accessibility -->
+        <section class="case__section" id="accessibility" aria-labelledby="accessibility-title">
+          <p class="case__section-index label">07</p>
+          <h2 class="case__section-title h2" id="accessibility-title">Accessibility</h2>
+          <ul class="case__list">
+            @for (item of study.accessibility; track item) {
+              <li class="case__list-item">{{ item }}</li>
+            }
+          </ul>
+          <p class="case__note">
+            <span class="case__note-key label">Note</span>
+            These are decisions that were specified and shipped. No certification is
+            claimed — the interface was verified by keyboard walkthrough and screen
+            reader use, not by an automated score.
+          </p>
+        </section>
+
+        <!-- performance -->
+        <section class="case__section" id="performance" aria-labelledby="performance-title">
+          <p class="case__section-index label">08</p>
+          <h2 class="case__section-title h2" id="performance-title">Performance</h2>
+          <ul class="case__list">
+            @for (item of study.performance; track item) {
+              <li class="case__list-item">{{ item }}</li>
+            }
+          </ul>
+        </section>
+
+        <!-- implementation -->
+        <section class="case__section" id="implementation" aria-labelledby="implementation-title">
+          <p class="case__section-index label">09</p>
+          <h2 class="case__section-title h2" id="implementation-title">Implementation</h2>
+          @for (sample of study.implementation; track sample.filename) {
+            <figure class="case__figure">
+              <app-code-block
+                [code]="sample.code"
+                [language]="sample.language"
+                [filename]="sample.filename"
+                [caption]="sample.caption"
+              />
+            </figure>
+          }
+        </section>
+
+        <!-- tradeoffs -->
+        <section class="case__section" id="tradeoffs" aria-labelledby="tradeoffs-title">
+          <p class="case__section-index label">10</p>
+          <h2 class="case__section-title h2" id="tradeoffs-title">Tradeoffs</h2>
+          <div class="case__tradeoffs">
+            @for (tradeoff of study.tradeoffs; track tradeoff.decision) {
+              <article class="case__tradeoff">
+                <h3 class="case__tradeoff-decision h4">{{ tradeoff.decision }}</h3>
+                <dl class="case__tradeoff-meta">
+                  <div class="case__tradeoff-row">
+                    <dt class="label">Alternative</dt>
+                    <dd>{{ tradeoff.alternative }}</dd>
+                  </div>
+                  <div class="case__tradeoff-row">
+                    <dt class="label">Rationale</dt>
+                    <dd>{{ tradeoff.rationale }}</dd>
+                  </div>
+                </dl>
+              </article>
+            }
+          </div>
+        </section>
+
+        <!-- outcome -->
+        <section class="case__section" id="outcome" aria-labelledby="outcome-title">
+          <p class="case__section-index label">11</p>
+          <h2 class="case__section-title h2" id="outcome-title">Outcome</h2>
+          <blockquote class="pull-quote case__quote">
+            {{ study.quote.text }}
+            @if (study.quote.attribution) {
+              <footer class="case__quote-attr label">{{ study.quote.attribution }}</footer>
+            }
+          </blockquote>
+          <p class="case__note">
+            <span class="case__note-key label">Honesty note</span>
+            {{ study.outcome.statement }}
+          </p>
+          <ul class="case__list">
+            @for (observation of study.outcome.observations; track observation) {
+              <li class="case__list-item">{{ observation }}</li>
+            }
+          </ul>
+        </section>
+
+        <!-- improve next -->
+        <section class="case__section" id="improve-next" aria-labelledby="improve-next-title">
+          <p class="case__section-index label">12</p>
+          <h2 class="case__section-title h2" id="improve-next-title">What I’d improve next</h2>
+          <ol class="case__numbered">
+            @for (item of study.improveNext; track item; let i = $index) {
+              <li class="case__numbered-item">
+                <span class="case__numbered-index label" aria-hidden="true">{{
+                  (i + 1).toString().padStart(2, '0')
+                }}</span>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ol>
+        </section>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------------ next project -->
+    @if (next(); as upcoming) {
+      <nav class="case__next" aria-label="Next project">
+        <a class="case__next-link" [routerLink]="'/work/' + upcoming.slug">
+          <span class="case__next-inner shell">
+            <span class="case__next-meta">
+              <span class="label">Next project</span>
+              <span class="case__next-index num">{{ upcoming.index }}</span>
+            </span>
+            <span class="case__next-title display">{{ upcoming.title }}</span>
+            <span class="case__next-subtitle">{{ upcoming.subtitle }}</span>
+            <span class="case__next-arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+      </nav>
+    }
+  </article>
+}

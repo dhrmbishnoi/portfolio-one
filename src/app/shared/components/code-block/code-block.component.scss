@@ -1,0 +1,12 @@
+.code__caption {
+  padding: var(--space-2) var(--space-4) var(--space-3);
+  border-top: 1px solid var(--rule);
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.code--flush {
+  border: 0;
+  background: none;
+}

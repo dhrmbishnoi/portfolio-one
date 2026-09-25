@@ -1,0 +1,234 @@
+.systems {
+  padding-block: var(--section-y);
+}
+
+.systems__inner {
+  display: grid;
+  gap: clamp(3rem, 6vw, 5rem);
+}
+
+// ------------------------------------------------------------------- head
+
+.systems__head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-5);
+  align-items: end;
+}
+
+.systems__label {
+  grid-column: 1 / span 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg-muted);
+}
+
+.systems__label-rule {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background-color: var(--border-strong);
+}
+
+.systems__title {
+  grid-column: 4 / span 7;
+  margin: 0;
+}
+
+.systems__title em {
+  font-style: italic;
+}
+
+.systems__lede {
+  grid-column: 4 / span 6;
+  max-width: 46ch;
+}
+
+// ------------------------------------------------------------------- list
+
+.systems__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.systems__entry {
+  display: grid;
+}
+
+.systems__rule {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.systems__entry-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-5);
+  align-items: start;
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.systems__number {
+  grid-column: 1 / span 2;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--step-4);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+  transition: color var(--dur-3) var(--ease-out);
+}
+
+.systems__body {
+  grid-column: 3 / span 5;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.systems__entry-title {
+  margin: 0;
+  font-size: var(--step-3);
+}
+
+.systems__statement {
+  max-width: 34ch;
+  color: var(--fg);
+}
+
+.systems__footnote {
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+}
+
+.systems__evidence {
+  grid-column: 9 / span 4;
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-top: var(--space-2);
+}
+
+.systems__evidence-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.02em;
+  color: var(--fg-secondary);
+  transition: color var(--dur-3) var(--ease-out);
+}
+
+.systems__evidence-marker {
+  width: 0.5rem;
+  height: 1px;
+  background-color: var(--fg-muted);
+  flex: none;
+  transform: translateY(-0.3em);
+  transition:
+    width var(--dur-3) var(--ease-out),
+    background-color var(--dur-3) var(--ease-out);
+}
+
+// ------------------------------------------------------- per-entry interaction
+
+// 01 · evidence items reveal their markers on hover.
+.systems__entry[data-interaction='evidence-reveal']:hover .systems__evidence-item {
+  color: var(--fg);
+}
+
+.systems__entry[data-interaction='evidence-reveal']:hover .systems__evidence-marker {
+  width: 1.25rem;
+  background-color: var(--accent-dark);
+}
+
+// 02 · the token layer highlights instead.
+.systems__entry[data-interaction='token-highlight'] .systems__entry-title {
+  transition: color var(--dur-3) var(--ease-out);
+}
+
+.systems__entry[data-interaction='token-highlight']:hover .systems__entry-title {
+  color: var(--accent-dark);
+}
+
+.systems__entry[data-interaction='token-highlight']:hover .systems__number {
+  color: var(--accent-dark);
+}
+
+// 03 · the rule extends.
+.systems__entry[data-interaction='rule-extend'] .systems__rule {
+  transition: transform var(--dur-4) var(--ease-out);
+  transform-origin: left center;
+}
+
+.systems__entry[data-interaction='rule-extend']:hover .systems__rule {
+  transform: scaleX(1.012);
+}
+
+// 04 · the number settles.
+.systems__entry[data-interaction='number-settle'] .systems__number {
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    color var(--dur-3) var(--ease-out);
+}
+
+.systems__entry[data-interaction='number-settle']:hover .systems__number {
+  transform: translateY(-2px);
+  color: var(--accent-dark);
+}
+
+// ------------------------------------------------------------------- foot
+
+.systems__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-strong);
+}
+
+.systems__foot-note {
+  color: var(--fg-muted);
+}
+
+// ------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
+  .systems__label,
+  .systems__title,
+  .systems__lede {
+    grid-column: 1 / -1;
+  }
+
+  .systems__number {
+    grid-column: 1 / span 3;
+  }
+
+  .systems__body {
+    grid-column: 4 / span 9;
+  }
+
+  .systems__evidence {
+    grid-column: 4 / span 9;
+  }
+}
+
+@media (max-width: 767px) {
+  .systems__number,
+  .systems__body,
+  .systems__evidence {
+    grid-column: 1 / -1;
+  }
+
+  .systems__number {
+    font-size: var(--step-3);
+  }
+}

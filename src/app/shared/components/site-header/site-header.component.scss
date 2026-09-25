@@ -1,0 +1,296 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: color-mix(in srgb, var(--paper) 88%, transparent);
+  transition:
+    background-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+
+.header--scrolled {
+  background-color: var(--surface);
+}
+
+.header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: var(--header-h);
+}
+
+.header__rule {
+  height: 1px;
+  background-color: transparent;
+  transition: background-color var(--dur-3) var(--ease-out);
+}
+
+.header--scrolled .header__rule {
+  background-color: var(--border-strong);
+}
+
+// ----------------------------------------------------------------- identity
+
+.identity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+}
+
+.identity__mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+
+.identity:hover .identity__mark {
+  background-color: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.identity__text {
+  display: grid;
+  gap: 2px;
+}
+
+.identity__name {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-snug);
+  line-height: 1.1;
+  color: var(--fg);
+}
+
+.identity__role {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: var(--fg-muted);
+}
+
+// --------------------------------------------------------------------- nav
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(var(--space-4), 2.4vw, var(--space-7));
+}
+
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding-block: var(--space-3);
+  font-size: var(--step--1);
+  color: var(--fg-secondary);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.nav__link:hover,
+.nav__link--active {
+  color: var(--fg);
+}
+
+.nav__index {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.nav__link--active .nav__index {
+  color: var(--accent-dark);
+}
+
+// Active indicator: a short rule that draws in under the label.
+.nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.55rem;
+  width: 100%;
+  height: 1px;
+  background-color: var(--accent-dark);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+
+.nav__link--active::after {
+  transform: scaleX(1);
+}
+
+// ------------------------------------------------------------------- right
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  justify-self: end;
+}
+
+.header__status-text {
+  display: inline;
+}
+
+// ------------------------------------------------------------- menu toggle
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 2.75rem;
+  padding-inline: var(--space-2);
+  border: 1px solid transparent;
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+
+.menu-toggle:hover {
+  border-color: var(--border);
+}
+
+.menu-toggle__bars {
+  display: grid;
+  gap: 4px;
+  width: 18px;
+}
+
+.menu-toggle__bars span {
+  display: block;
+  height: 1px;
+  background-color: var(--fg);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.header[data-menu-open='true'] .menu-toggle__bars span:first-child {
+  transform: translateY(2.5px) rotate(12deg);
+}
+
+.header[data-menu-open='true'] .menu-toggle__bars span:last-child {
+  transform: translateY(-2.5px) rotate(-12deg);
+}
+
+// ------------------------------------------------------------- mobile menu
+
+.menu {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  z-index: var(--z-menu);
+  background-color: var(--paper);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out),
+    visibility var(--dur-3) var(--ease-out);
+  overflow-y: auto;
+}
+
+.menu--open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.menu__inner {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-7) var(--space-9);
+}
+
+.menu__list {
+  display: grid;
+}
+
+.menu__item {
+  border-top: 1px solid var(--rule);
+}
+
+.menu__item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.menu__link {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: var(--space-5);
+}
+
+.menu__index {
+  color: var(--fg-muted);
+}
+
+.menu__label {
+  font-family: var(--font-serif);
+  font-size: var(--step-3);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+}
+
+.menu__hint {
+  grid-column: 2;
+  color: var(--fg-muted);
+}
+
+.menu__link--active .menu__label {
+  font-style: italic;
+}
+
+.menu__link--active .menu__index {
+  color: var(--accent-dark);
+}
+
+.menu__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+// -------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
+  .nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 599px) {
+  .header__status-text {
+    display: none;
+  }
+
+  .identity__role {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu {
+    display: none;
+  }
+}

@@ -1,0 +1,31 @@
+<section class="principles" aria-labelledby="principles-title">
+  <div class="principles__inner shell">
+    <header class="principles__head">
+      <p class="principles__label label">
+        <span class="principles__label-rule" aria-hidden="true"></span>
+        Engineering principles
+      </p>
+
+      <h2 class="principles__title display" id="principles-title">
+        Good frontend work<br />
+        should disappear<br />
+        into the <em>product.</em>
+      </h2>
+
+      <p class="principles__lede body-lg">
+        Users should notice clarity, speed and confidence — not the complexity
+        required to create them.
+      </p>
+    </header>
+
+    <ul class="principles__list">
+      @for (principle of principles; track principle.id; let i = $index) {
+        <li class="principles__item" data-principle-line>
+          <p class="principles__index label" aria-hidden="true">0{{ i + 1 }}</p>
+          <h3 class="principles__item-title h4">{{ principle.title }}</h3>
+          <p class="principles__item-body small">{{ principle.body }}</p>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

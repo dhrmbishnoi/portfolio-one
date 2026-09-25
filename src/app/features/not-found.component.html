@@ -1,0 +1,43 @@
+<section class="notfound" aria-labelledby="notfound-title">
+  <div class="notfound__inner shell">
+    <p class="notfound__code num">404</p>
+
+    <div class="notfound__body">
+      <h1 class="notfound__title h1" id="notfound-title">
+        This route does not<br />
+        <em>resolve.</em>
+      </h1>
+
+      <p class="notfound__copy body-lg">
+        The page you asked for is not part of this system. It may have been renamed,
+        or the link may have been mistyped.
+      </p>
+
+      <nav class="notfound__nav" aria-label="Recovery">
+        <a class="btn" routerLink="/">Back to home <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" routerLink="/work">Selected work</a>
+        <a class="btn btn--ghost" routerLink="/journal">Journal</a>
+      </nav>
+    </div>
+
+    <aside class="notfound__aside" aria-label="Diagnostics">
+      <p class="label">Diagnostics</p>
+      <dl class="meta">
+        <div class="meta__row">
+          <dt class="meta__key">Status</dt>
+          <dd class="meta__value">404 — route not registered</dd>
+        </div>
+        <div class="meta__row">
+          <dt class="meta__key">Action</dt>
+          <dd class="meta__value">Redirected from an unknown slug</dd>
+        </div>
+        <div class="meta__row">
+          <dt class="meta__key">Contact</dt>
+          <dd class="meta__value">
+            <a class="link" [href]="site.contact.mailto">{{ site.contact.email }}</a>
+          </dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>

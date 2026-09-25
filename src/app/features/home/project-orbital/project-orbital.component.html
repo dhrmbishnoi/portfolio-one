@@ -1,0 +1,211 @@
+<article class="orbital" id="orbital" aria-labelledby="orbital-title">
+  <!-- ------------------------------------------------------------ title row -->
+  <header class="orbital__head">
+    <div class="orbital__title-block">
+      <p class="orbital__index label">
+        <span class="orbital__index-num num">01</span>
+        <span class="orbital__index-rule" aria-hidden="true"></span>
+        Selected work
+      </p>
+      <h3 class="orbital__title display" id="orbital-title">Orbital</h3>
+      <p class="orbital__subtitle body-lg">{{ project.subtitle }}</p>
+    </div>
+
+    <dl class="orbital__meta meta">
+      <div class="meta__row">
+        <dt class="meta__key">Year</dt>
+        <dd class="meta__value num">{{ project.year }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Role</dt>
+        <dd class="meta__value">{{ project.role }}</dd>
+      </div>
+      <div class="meta__row">
+        <dt class="meta__key">Focus</dt>
+        <dd class="meta__value">
+          <span class="orbital__chips">
+            @for (item of project.focus; track item) {
+              <span class="chip">{{ item }}</span>
+            }
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </header>
+
+  <!-- --------------------------------------------------------------- brief -->
+  <div class="orbital__brief">
+    <div class="orbital__brief-block">
+      <p class="label orbital__brief-key">Problem</p>
+      <p class="orbital__brief-text body">{{ project.problem }}</p>
+    </div>
+    <div class="orbital__brief-block">
+      <p class="label orbital__brief-key">What was built</p>
+      <p class="orbital__brief-text body">{{ project.built }}</p>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------- the composition -->
+  <div class="orbital__ui">
+    <div class="orbital__ui-bar">
+      <div class="orbital__ui-id">
+        <span class="orbital__ui-dot" aria-hidden="true"></span>
+        <span class="label orbital__ui-name">Planning board</span>
+        <span class="label orbital__ui-window">18h window · 3 lanes</span>
+      </div>
+
+      <div class="orbital__filters" role="group" aria-label="Filter plan items by status">
+        @for (filter of filters; track filter.id) {
+          <button
+            type="button"
+            class="orbital__filter"
+            [class.orbital__filter--active]="activeFilter() === filter.id"
+            [attr.aria-pressed]="activeFilter() === filter.id"
+            (click)="setFilter(filter.id)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+        <p class="orbital__count num" aria-live="polite">{{ visibleCount() }} items</p>
+      </div>
+    </div>
+
+    <!-- desktop timeline -->
+    <div class="orbital__timeline" aria-hidden="true">
+      <div class="orbital__axis" data-orbital-axis>
+        @for (hour of hours; track hour) {
+          <span class="orbital__tick" [class.orbital__tick--major]="hour % 6 === 0">
+            @if (hour % 3 === 0) {
+              <span class="orbital__tick-label num">{{ hour }}</span>
+            }
+          </span>
+        }
+      </div>
+
+      @for (lane of filteredLanes(); track lane.id) {
+        <div class="orbital__lane">
+          <div class="orbital__lane-head">
+            <span class="orbital__lane-label">{{ lane.label }}</span>
+            <span class="orbital__lane-meta label">{{ lane.meta }}</span>
+          </div>
+          <div class="orbital__lane-track">
+            @for (item of lane.items; track item.id) {
+              <span
+                class="orbital__bar"
+                [class]="'orbital__bar--' + item.status"
+                [style.grid-column]="(item.start + 1) + ' / span ' + item.span"
+                [attr.data-status]="item.status"
+                data-orbital-bar
+              >
+                <span class="orbital__bar-label">{{ item.label }}</span>
+                <span class="orbital__bar-owner num">{{ item.owner }}</span>
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- mobile / reduced-density list -->
+    <div class="orbital__list">
+      @for (lane of filteredLanes(); track lane.id) {
+        <section class="orbital__list-lane">
+          <button
+            type="button"
+            class="orbital__list-head"
+            [attr.aria-expanded]="laneOpen() === lane.id"
+            (click)="toggleLane(lane.id)"
+          >
+            <span class="orbital__lane-label">{{ lane.label }}</span>
+            <span class="orbital__lane-meta label">{{ lane.meta }}</span>
+          </button>
+          @if (laneOpen() === lane.id) {
+            <ul class="orbital__list-items">
+              @for (item of lane.items; track item.id) {
+                <li class="orbital__list-item">
+                  <span class="orbital__list-status" [attr.data-status]="item.status"></span>
+                  <span class="orbital__list-label">{{ item.label }}</span>
+                  <span class="orbital__list-meta num">{{ rangeOf(item) }} · {{ item.owner }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    </div>
+
+    <!-- status matrix -->
+    <div class="orbital__matrix">
+      <p class="label orbital__matrix-title">Status matrix</p>
+      <table class="orbital__table">
+        <caption class="visually-hidden">
+          Plan item counts by lane and status for the current filter
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Lane</th>
+            <th scope="col">Planned</th>
+            <th scope="col">Active</th>
+            <th scope="col">At risk</th>
+            <th scope="col">Blocked</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of visuals.matrix; track row.label) {
+            <tr>
+              <th scope="row">{{ row.label }}</th>
+              <td class="num">{{ row.planned }}</td>
+              <td class="num">{{ row.active }}</td>
+              <td class="num">{{ row.risk }}</td>
+              <td class="num">{{ row.blocked }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- collaboration panel -->
+    <aside class="orbital__collab" aria-label="Live collaboration">
+      <p class="label orbital__collab-title">Live session</p>
+      <ul class="orbital__collab-list">
+        @for (person of visuals.collaborators; track person.initials) {
+          <li class="orbital__collab-item">
+            <span class="orbital__avatar" [attr.data-state]="person.state">{{ person.initials }}</span>
+            <span class="orbital__collab-body">
+              <span class="orbital__collab-name">{{ person.name }}</span>
+              <span class="orbital__collab-role label">{{ person.role }}</span>
+            </span>
+            <span class="orbital__collab-state" [attr.data-state]="person.state">
+              {{ person.state }}
+            </span>
+          </li>
+        }
+      </ul>
+    </aside>
+  </div>
+
+  <!-- -------------------------------------------------------- annotations -->
+  <div class="orbital__annotations">
+    @for (note of visuals.annotations; track note.label) {
+      <p class="annotation orbital__annotation" data-orbital-annotation>
+        <span class="annotation__marker" aria-hidden="true"></span>
+        <span><span class="orbital__annotation-key">{{ note.label }}</span> {{ note.text }}</span>
+      </p>
+    }
+  </div>
+
+  <!-- --------------------------------------------------------- focus + cta -->
+  <footer class="orbital__foot">
+    <ul class="orbital__focus">
+      @for (item of project.technicalFocus; track item) {
+        <li class="orbital__focus-item">
+          <span class="orbital__focus-marker" aria-hidden="true"></span>{{ item }}
+        </li>
+      }
+    </ul>
+    <a class="arrow-link orbital__cta" routerLink="/work/orbital">
+      Read the Orbital case study
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </footer>
+</article>

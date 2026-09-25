@@ -1,0 +1,68 @@
+{
+  "slug": "signals-rxjs-state-ownership",
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "Signals are for state you own"
+    },
+    {
+      "kind": "paragraph",
+      "text": "A signal is synchronous, local and disposable. It has no notion of time, ordering or delivery, because it does not need one. This makes it the right shape for view state: the selected row, the current density, the open panel, the derived value of a filter."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "view-state.ts",
+      "code": "@Component({ standalone: true })\nexport class PlanningBoard {\n  readonly density = signal<Density>('comfortable');\n  readonly selectedId = signal<string | null>(null);\n\n  // Derived state stays derived — no second source of truth.\n  readonly rowHeight = computed(() => DENSITY[this.density()]);\n  readonly selected = computed(() =>\n    this.plans().find((p) => p.id === this.selectedId()) ?? null,\n  );\n}"
+    },
+    {
+      "kind": "paragraph",
+      "text": "The rule I use: if unmounting the route should destroy it, it is view state, and it belongs in a signal. Anything else needs a model that can answer questions a signal cannot."
+    },
+    {
+      "kind": "heading",
+      "text": "RxJS is for state you share"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Server state is concurrent, replayed and reordered. It arrives as a stream, it may arrive twice, and two clients may change it at the same second. RxJS is a good fit not because streams are fashionable but because the operators encode the answers: debounce, distinctUntilChanged, switchMap, scan."
+    },
+    {
+      "kind": "code",
+      "language": "typescript",
+      "filename": "plan-store.ts",
+      "code": "@Injectable({ providedIn: 'root' })\nexport class PlanStore {\n  private readonly entities = signal<PlanEntities>(EMPTY);\n  private readonly intents = inject(PlanEventStream).intents$;\n\n  readonly plans = computed(() => this.entities().plans);\n\n  constructor() {\n    // Idempotent reduction means replays and reconnects converge.\n    this.intents.pipe(\n      takeUntilDestroyed(),\n      scan(this.reduce, this.entities()),\n    ).subscribe((next) => this.entities.set(next));\n  }\n\n  private reduce = (state: PlanEntities, intent: PlanIntent): PlanEntities =>\n    PlanReducer.apply(state, intent);\n}"
+    },
+    {
+      "kind": "note",
+      "label": "Boundary",
+      "text": "The stream ends at the store. Everything downstream reads a signal, so no component needs to know the data was ever asynchronous."
+    },
+    {
+      "kind": "heading",
+      "text": "The mistake is mixing them in the middle"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Problems appear when a stream is consumed halfway up a component tree and a signal is written from an effect. At that point there are two writers, no ordering guarantee and no way to reason about a race. The fix is boring: streams end at a store, signals start at a store."
+    },
+    {
+      "kind": "list",
+      "items": [
+        "Signals: synchronous, local, disposable, single writer.",
+        "Streams: asynchronous, shared, replayed, reduced into a store.",
+        "Effects are for synchronising with the outside world, never for deriving state.",
+        "If you need an effect to keep two values in step, one of them is not state."
+      ]
+    },
+    {
+      "kind": "quote",
+      "text": "Signals and RxJS are not competitors. They are answers to different questions about ownership.",
+      "attribution": "State note"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Once the boundary is explicit, the choice stops being ideological. You stop asking \"signals or RxJS?\" and start asking \"who owns this, and what happens when two people change it at once?\" — which is the question that was worth answering all along."
+    }
+  ]
+}

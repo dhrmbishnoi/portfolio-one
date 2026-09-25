@@ -1,0 +1,146 @@
+.method {
+  padding-block: var(--section-y);
+}
+
+.method__inner {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+// ------------------------------------------------------------------- head
+
+.method__head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: end;
+}
+
+.method__label {
+  grid-column: 1 / span 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg-muted);
+}
+
+.method__label-rule {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background-color: var(--border-strong);
+}
+
+.method__title {
+  grid-column: 4 / span 7;
+  margin: 0;
+}
+
+.method__title em {
+  font-style: italic;
+}
+
+// ------------------------------------------------------------------ track
+
+.method__track-wrap {
+  position: relative;
+}
+
+.method__track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.method__line {
+  position: absolute;
+  top: 1.35rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-strong);
+}
+
+.method__stage {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding: 0 var(--space-5) 0 0;
+}
+
+.method__stage-index {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--fg-muted);
+}
+
+// The node that sits on the connecting rule.
+.method__stage-index::before {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ink);
+  background-color: var(--paper);
+  border-radius: 50%;
+  transition:
+    background-color var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+
+.method__stage:hover .method__stage-index::before {
+  background-color: var(--accent);
+  border-color: var(--accent-dark);
+}
+
+.method__stage-title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.method__stage-body {
+  max-width: 28ch;
+  color: var(--fg-secondary);
+}
+
+.method__arrow {
+  position: absolute;
+  top: 0.72rem;
+  right: -0.1rem;
+  font-size: 0.625rem;
+  line-height: 1;
+  color: var(--fg-muted);
+}
+
+// ------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
+  .method__label,
+  .method__title {
+    grid-column: 1 / -1;
+  }
+
+  .method__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--space-7);
+  }
+
+  .method__line {
+    display: none;
+  }
+}
+
+@media (max-width: 599px) {
+  .method__track {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .method__arrow {
+    display: none;
+  }
+}

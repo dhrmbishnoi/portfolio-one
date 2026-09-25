@@ -1,0 +1,93 @@
+<header
+  class="header"
+  [class.header--scrolled]="state().scrolled"
+  [attr.data-menu-open]="state().menuOpen"
+>
+  <div class="header__inner shell">
+    <a class="identity" routerLink="/" aria-label="Noah Mercer — home">
+      <span class="identity__mark" aria-hidden="true">{{ site.identity.monogram }}</span>
+      <span class="identity__text">
+        <span class="identity__name">{{ site.identity.name }}</span>
+        <span class="identity__role label">{{ site.identity.roleShort }}</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      @for (item of site.nav; track item.path) {
+        <a
+          class="nav__link"
+          [routerLink]="item.path"
+          routerLinkActive="nav__link--active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+        >
+          <span class="nav__index" aria-hidden="true">{{ $index + 1 }}</span>
+          <span class="nav__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="header__right">
+      <p class="status header__status">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span class="header__status-text">{{ site.identity.availability }}</span>
+      </p>
+
+      <button
+        type="button"
+        class="menu-toggle"
+        data-menu-toggle
+        [attr.aria-expanded]="state().menuOpen"
+        aria-controls="mobile-menu"
+        (click)="toggleMenu()"
+      >
+        <span class="menu-toggle__bars" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+        <span class="menu-toggle__label label">{{ menuLabel() }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="header__rule" aria-hidden="true"></div>
+</header>
+
+<div
+  class="menu"
+  id="mobile-menu"
+  data-menu-panel
+  [class.menu--open]="state().menuOpen"
+  [attr.aria-hidden]="!state().menuOpen"
+  [attr.inert]="state().menuOpen ? null : ''"
+>
+  <div class="menu__inner shell">
+    <p class="menu__eyebrow label">Navigation</p>
+    <nav aria-label="Mobile">
+      <ul class="menu__list">
+        @for (item of site.nav; track item.path) {
+          <li class="menu__item">
+            <a
+              class="menu__link"
+              [routerLink]="item.path"
+              routerLinkActive="menu__link--active"
+              [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+              (click)="closeMenu()"
+            >
+              <span class="menu__index label" aria-hidden="true">0{{ $index + 1 }}</span>
+              <span class="menu__label">{{ item.label }}</span>
+              <span class="menu__hint label">{{ item.hint }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="menu__foot">
+      <p class="status">
+        <span class="status__dot" aria-hidden="true"></span>
+        {{ site.identity.availability }}
+      </p>
+      <a class="link link--muted" [href]="site.contact.mailto">{{ site.contact.email }}</a>
+    </div>
+  </div>
+</div>
