@@ -9,6 +9,8 @@ import {
 import { gsap } from 'gsap';
 import { SYSTEM_ENTRIES } from '../../../core/data/systems.data';
 import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { ParallaxDirective } from '../../../shared/directives/parallax.directive';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
 /**
  * SYSTEMS I CARE ABOUT
@@ -20,9 +22,13 @@ import { MotionService, nextFrame } from '../../../core/services/motion.service'
 @Component({
   selector: 'app-systems-section',
   standalone: true,
+  imports: [RevealDirective, ParallaxDirective],
   templateUrl: './systems-section.component.html',
   styleUrl: './systems-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The daylight interlude: the paper register gives the eye a rest between the
+  // two dark movements and the two that follow.
+  host: { class: 'on-paper register-seam register-seam--top' },
 })
 export class SystemsSection implements OnDestroy {
   protected readonly entries = SYSTEM_ENTRIES;

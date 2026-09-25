@@ -1,27 +1,47 @@
-<section class="cta" aria-labelledby="cta-title">
+<section class="cta cinema" id="contact" aria-labelledby="cta-title">
   <div class="cta__inner shell">
     <p class="cta__label label" data-cta-line>
       <span class="cta__label-rule" aria-hidden="true"></span>
-      Contact
+      Next chapter — yours
     </p>
 
-    <h2 class="cta__title display" id="cta-title">
+    <h2 class="cta__title display-xl" id="cta-title">
       <span class="cta__line" data-cta-line>Building something</span>
       <span class="cta__line" data-cta-line>that deserves</span>
-      <span class="cta__line cta__line--accent" data-cta-line>care?</span>
+      <span class="cta__line cta__line--accent gradient-text" data-cta-line>care?</span>
     </h2>
 
     <p class="cta__copy body-lg" data-cta-line>
-      I’m interested in product teams that value thoughtful frontend architecture,
-      strong interaction design and long-term quality.
+      I take on a small number of projects a year — product work where the
+      frontend is the product, and where the details are expected to hold up
+      under real use.
     </p>
 
     <div class="cta__actions" data-cta-line>
-      <a class="btn" routerLink="/contact">
-        Start a conversation
-        <span class="arrow" aria-hidden="true">→</span>
+      <a class="btn btn--lg" routerLink="/contact" appMagnetic data-cursor="Talk">
+        <span class="magnetic__inner">
+          Start a conversation
+          <span class="arrow" aria-hidden="true">→</span>
+        </span>
       </a>
-      <a class="btn btn--ghost" [href]="site.contact.mailto">{{ site.contact.email }}</a>
+      <a class="btn btn--ghost btn--lg" [href]="site.contact.mailto" appMagnetic>
+        <span class="magnetic__inner">{{ site.contact.email }}</span>
+      </a>
     </div>
+
+    <dl class="cta__meta" data-cta-line>
+      <div class="cta__meta-item">
+        <dt class="label">Availability</dt>
+        <dd class="mono">{{ site.identity.availability }}</dd>
+      </div>
+      <div class="cta__meta-item">
+        <dt class="label">Response</dt>
+        <dd class="mono">Within two working days</dd>
+      </div>
+      <div class="cta__meta-item">
+        <dt class="label">Working with</dt>
+        <dd class="mono">Product teams, remote-first</dd>
+      </div>
+    </dl>
   </div>
 </section>

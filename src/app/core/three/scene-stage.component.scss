@@ -1,0 +1,157 @@
+// ============================================================================
+//  SCENE STAGE
+//  One fixed viewport-sized canvas behind the home narrative. Nothing here is
+//  interactive — the page underneath owns every event — so the whole layer is
+//  pointer-transparent and invisible to assistive technology.
+// ============================================================================
+
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-stage, 0);
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+// A deep wash behind the canvas so the artifact sits in a space rather than on
+// a flat black rectangle. Reads as the "floor" of the scene.
+.stage__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% 118%, rgba(124, 92, 255, 0.22), transparent 62%),
+    radial-gradient(80% 60% at 82% 8%, rgba(55, 232, 213, 0.1), transparent 60%),
+    linear-gradient(180deg, var(--void) 0%, var(--stage) 55%, #06070d 100%);
+}
+
+.stage__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out, ease);
+}
+
+// The host carries the state flag, so the selector has to be a host selector —
+// a plain attribute selector cannot reach the host from inside the component.
+:host([data-stage='live']) .stage__canvas {
+  opacity: 1;
+}
+
+.stage__fallback {
+  position: absolute;
+  inset: 0;
+  transition: opacity 600ms var(--ease-out, ease);
+}
+
+:host([data-stage='live']) .stage__fallback {
+  visibility: hidden;
+  opacity: 0;
+}
+
+// ---------------------------------------------------------------- the orbs ---
+// The non-WebGL stand-in: the same trio of brand colours, blurred and drifting.
+.stage__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.stage__orb--iris {
+  top: 12%;
+  right: 4%;
+  width: min(46vw, 40rem);
+  height: min(46vw, 40rem);
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.55), transparent 68%);
+  animation: stage-drift-a 26s ease-in-out infinite;
+}
+
+.stage__orb--aqua {
+  bottom: 6%;
+  left: 6%;
+  width: min(38vw, 32rem);
+  height: min(38vw, 32rem);
+  background: radial-gradient(circle, rgba(55, 232, 213, 0.34), transparent 68%);
+  animation: stage-drift-b 34s ease-in-out infinite;
+}
+
+.stage__orb--accent {
+  top: 44%;
+  left: 38%;
+  width: min(26vw, 22rem);
+  height: min(26vw, 22rem);
+  background: radial-gradient(circle, rgba(215, 255, 79, 0.22), transparent 70%);
+  animation: stage-drift-c 21s ease-in-out infinite;
+}
+
+@keyframes stage-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-4%, 6%, 0) scale(1.08);
+  }
+}
+
+@keyframes stage-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.04);
+  }
+  50% {
+    transform: translate3d(5%, -5%, 0) scale(0.94);
+  }
+}
+
+@keyframes stage-drift-c {
+  0%,
+  100% {
+    transform: translate3d(-3%, 2%, 0) scale(0.96);
+  }
+  50% {
+    transform: translate3d(4%, -4%, 0) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage__orb {
+    animation: none;
+  }
+
+  .stage__canvas,
+  .stage__fallback {
+    transition: none;
+  }
+}
+
+@media (max-width: 767px) {
+  // Phones get a tighter field: the artifact is centred and the orbs sit lower
+  // so they never sit behind body copy at full strength.
+  .stage__orb {
+    filter: blur(64px);
+  }
+
+  .stage__orb--iris {
+    top: 4%;
+    right: -18%;
+    width: 78vw;
+    height: 78vw;
+  }
+
+  .stage__orb--aqua {
+    left: -14%;
+    width: 70vw;
+    height: 70vw;
+  }
+}

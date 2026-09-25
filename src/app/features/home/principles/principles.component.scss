@@ -1,9 +1,12 @@
 .principles {
   padding-block: var(--section-y);
-  background-color: var(--dark);
+  background-color: var(--bg);
 }
 
 .principles__inner {
+  // Above the register seam that dissolves this section back into the stage.
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: clamp(3rem, 6vw, 5rem);
 }
@@ -30,7 +33,7 @@
   display: block;
   width: 1.5rem;
   height: 1px;
-  background-color: var(--border-dark-strong);
+  background-color: var(--border-strong);
 }
 
 .principles__title {
@@ -57,7 +60,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--border-dark-strong);
+  border-top: 1px solid var(--border-strong);
 }
 
 .principles__item {

@@ -27,6 +27,9 @@ import { TechnicalDiagram } from '../../shared/components/technical-diagram/tech
   templateUrl: './systems.component.html',
   styleUrl: './systems.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The inner pages stay in the daylight editorial register: the dark, cinematic
+  // treatment is the home narrative's voice, and the documents read better on paper.
+  host: { class: 'on-paper' },
 })
 export class SystemsComponent implements OnDestroy {
   protected readonly sections = MANUAL_SECTIONS;

@@ -25,6 +25,9 @@ import { MotionService, nextFrame } from '../../core/services/motion.service';
   templateUrl: './journal.component.html',
   styleUrl: './journal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The inner pages stay in the daylight editorial register: the dark, cinematic
+  // treatment is the home narrative's voice, and the documents read better on paper.
+  host: { class: 'on-paper' },
 })
 export class JournalComponent implements OnDestroy {
   protected readonly articles = JOURNAL;

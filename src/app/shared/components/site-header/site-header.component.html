@@ -1,11 +1,16 @@
 <header
   class="header"
+  #header
   [class.header--scrolled]="state().scrolled"
+  [class.header--hidden]="state().hidden"
   [attr.data-menu-open]="state().menuOpen"
 >
   <div class="header__inner shell">
     <a class="identity" routerLink="/" aria-label="Noah Mercer — home">
-      <span class="identity__mark" aria-hidden="true">{{ site.identity.monogram }}</span>
+      <span class="identity__mark" aria-hidden="true">
+        <span class="identity__monogram">{{ site.identity.monogram }}</span>
+        <span class="identity__mark-glow" aria-hidden="true"></span>
+      </span>
       <span class="identity__text">
         <span class="identity__name">{{ site.identity.name }}</span>
         <span class="identity__role label">{{ site.identity.roleShort }}</span>
@@ -13,17 +18,25 @@
     </a>
 
     <nav class="nav" aria-label="Primary">
-      @for (item of site.nav; track item.path) {
-        <a
-          class="nav__link"
-          [routerLink]="item.path"
-          routerLinkActive="nav__link--active"
-          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-        >
-          <span class="nav__index" aria-hidden="true">{{ $index + 1 }}</span>
-          <span class="nav__label">{{ item.label }}</span>
-        </a>
-      }
+      <ul class="nav__list">
+        @for (item of site.nav; track item.path) {
+          <li>
+            <a
+              class="nav__link"
+              [routerLink]="item.path"
+              routerLinkActive="nav__link--active"
+              [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+              appMagnetic
+              [appMagnetic]="{ strength: 0.22, innerStrength: 0.28, radius: 26 }"
+            >
+              <span class="magnetic__inner">
+                <span class="nav__index num" aria-hidden="true">0{{ $index + 1 }}</span>
+                <span class="nav__label">{{ item.label }}</span>
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
     </nav>
 
     <div class="header__right">
@@ -31,6 +44,10 @@
         <span class="status__dot" aria-hidden="true"></span>
         <span class="header__status-text">{{ site.identity.availability }}</span>
       </p>
+
+      <a class="btn header__cta" routerLink="/contact" appMagnetic data-cursor="Talk">
+        <span class="magnetic__inner">Start a project</span>
+      </a>
 
       <button
         type="button"
@@ -44,7 +61,7 @@
           <span></span>
           <span></span>
         </span>
-        <span class="menu-toggle__label label">{{ menuLabel() }}</span>
+        <span class="visually-hidden">{{ menuLabel() }}</span>
       </button>
     </div>
   </div>

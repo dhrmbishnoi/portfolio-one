@@ -1,18 +1,43 @@
 .footer {
-  padding-bottom: var(--space-6);
+  position: relative;
+  z-index: 3;
+  background-color: var(--stage);
+  border-top: 1px solid var(--border-faint);
+  overflow: hidden;
 }
 
-.footer__rule {
-  height: 1px;
-  background-color: var(--border-strong);
+// -------------------------------------------------------------------- ticker
+
+.footer__ticker {
+  border-bottom: 1px solid var(--border-faint);
+  padding-block: var(--space-4);
+  --marquee-duration: 62s;
 }
+
+.footer__ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-size: var(--step-2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.footer__ticker-sep {
+  font-size: 0.5rem;
+  color: var(--accent);
+}
+
+// ---------------------------------------------------------------------- grid
 
 .footer__inner {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   row-gap: var(--space-7);
-  padding-block: var(--space-8) var(--space-7);
+  padding-block: var(--space-8) var(--space-8);
 }
 
 .footer__identity {
@@ -23,19 +48,26 @@
 }
 
 .footer__mark {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background-color: var(--glass);
   font-family: var(--font-mono);
-  font-size: var(--step-2);
+  font-size: var(--step--1);
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
   color: var(--fg);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
 .footer__name {
-  font-family: var(--font-serif);
   font-size: var(--step-2);
-  letter-spacing: var(--tracking-tight);
-  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
 }
 
 .footer__role {
@@ -69,8 +101,38 @@
 
 .footer__list {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-2);
   font-size: var(--step--1);
+}
+
+.footer__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.2em 0;
+  color: var(--fg-secondary);
+  transition:
+    color var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.footer__link-mark {
+  width: 0;
+  height: 1px;
+  background-color: var(--accent);
+  transition: width var(--dur-3) var(--ease-out);
+}
+
+.footer__link:hover,
+.footer__link:focus-visible {
+  color: var(--fg);
+  transform: translateX(3px);
+}
+
+.footer__link:hover .footer__link-mark,
+.footer__link:focus-visible .footer__link-mark {
+  width: 12px;
 }
 
 .footer__link--active {
@@ -81,13 +143,25 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
+  min-height: 2.5rem;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--fg);
-  padding-block: var(--space-1);
-  transition: color var(--dur-2) var(--ease-out);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+
+.footer__top:hover {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
 }
 
 .footer__top .arrow {
@@ -100,14 +174,32 @@
 
 .footer__copy {
   color: var(--fg-muted);
-  margin-top: var(--space-4);
+  margin-top: var(--space-2);
 }
 
-@media (max-width: 1023px) {
-  .footer__inner {
-    row-gap: var(--space-8);
-  }
+// ---------------------------------------------------------------------- base
 
+.footer__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--border-faint);
+}
+
+.footer__base-item {
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+}
+
+// ---------------------------------------------------------------- responsive
+
+@media (max-width: 1023px) {
   .footer__identity {
     grid-column: 1 / -1;
   }

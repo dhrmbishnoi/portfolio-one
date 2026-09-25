@@ -16,6 +16,9 @@ import { SITE } from '../core/config/site.config';
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The inner pages stay in the daylight editorial register: the dark, cinematic
+  // treatment is the home narrative's voice, and the documents read better on paper.
+  host: { class: 'on-paper' },
 })
 export class NotFoundComponent {
   protected readonly site = SITE;

@@ -3,14 +3,26 @@
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
+  position: relative;
+  isolation: isolate;
 }
 
 main {
   flex: 1 1 auto;
+  position: relative;
+  z-index: 2;
 
   // The skip-link target must never show a focus ring of its own.
   &:focus,
   &:focus-visible {
     outline: none;
   }
+}
+
+// The grain sits above the WebGL stage *and* above the content, so one film
+// stock unifies the artifact and the page. Kept very low opacity so it never
+// costs legibility; the header and pointer instruments sit above it.
+.grain {
+  z-index: 3;
+  opacity: 0.22;
 }

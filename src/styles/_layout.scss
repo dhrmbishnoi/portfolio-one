@@ -1,6 +1,6 @@
 // ============================================================================
 //  LAYOUT
-//  12-column grid, 1480px shell, asymmetric by default.
+//  12-column grid, 1560px shell, asymmetric by default.
 //  Breakpoints: 390 / 768 / 1024 / 1440 / 1920
 // ============================================================================
 
@@ -13,13 +13,94 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  // Lenis owns smooth scrolling; native smooth-scroll would fight it.
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
   margin: 0;
-  min-height: 100%;
-  overflow-x: hidden;
+  min-height: 100svh;
+  // `clip` rather than `hidden`: hidden turns the body into a scroll container,
+  // which is exactly the condition that breaks ScrollTrigger pinning. Clip
+  // removes the overflow without touching the scroll topology.
+  overflow-x: clip;
+  background-color: var(--stage);
+  // Sticky-footer layout: a short page still fills the fold, so a paper
+  // register page never leaves a band of dark stage under the content.
+  //
+  // The chain has to run all the way down — body → app-root → main → the routed
+  // page — because the shell's children live inside `app-root`, not inside
+  // `body`. Stretching only the body would leave the page short and the stage
+  // showing underneath it.
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+main > * {
+  flex: 1 0 auto;
+}
+
+// ---------------------------------------------------------------------------
+//  Component hosts are block boxes
+//
+//  A custom element is `display: inline` until told otherwise. That is fine
+//  until a host carries a register class: `.on-paper` sets `background-color`
+//  and `color`, and on an inline box with block children the background paints
+//  over a zero-height fragment — so the page would inherit the daylight ink
+//  over the dark stage. Every host that owns content is therefore block.
+// ---------------------------------------------------------------------------
+
+app-about,
+app-article,
+app-case-study,
+app-code-block,
+app-contact,
+app-contact-cta,
+app-hero,
+app-journal,
+app-method,
+app-not-found,
+app-principles,
+app-project-forge,
+app-project-orbital,
+app-project-signal,
+app-release-gate,
+app-selected-work,
+app-site-footer,
+app-site-header,
+app-story,
+app-systems,
+app-systems-section,
+app-technical-diagram,
+app-timeline-lane,
+app-vital-trace,
+app-work {
+  display: block;
 }
 
 img,
@@ -51,13 +132,25 @@ select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-dark);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
-.on-dark :focus-visible {
-  outline-color: var(--accent);
+.on-paper :focus-visible {
+  outline-color: #6f8c00;
+}
+
+// The system cursor is only hidden once <app-cursor> is genuinely live, which
+// is why the flag lives on <html> and is written by the component itself.
+html[data-cursor='custom'],
+html[data-cursor='custom'] * {
+  cursor: none;
+}
+
+html[data-cursor='custom'] input,
+html[data-cursor='custom'] textarea {
+  cursor: text;
 }
 
 // ------------------------------------------------------------------- shell
@@ -181,18 +274,18 @@ select {
   left: var(--space-3);
   z-index: calc(var(--z-loader) + 1);
   transform: translateY(-200%);
-  background-color: var(--ink);
-  color: var(--paper);
+  background-color: var(--accent);
+  color: var(--accent-ink);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  border-radius: var(--radius-pill);
   padding: var(--space-3) var(--space-5);
   transition: transform var(--dur-2) var(--ease-out);
 
   &:focus-visible {
     transform: translateY(0);
-    outline-color: var(--accent-dark);
   }
 }
 

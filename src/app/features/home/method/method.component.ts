@@ -1,13 +1,17 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnDestroy,
+  afterNextRender,
   inject,
+  signal,
+  viewChild,
 } from '@angular/core';
 import { gsap } from 'gsap';
-import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { MotionService } from '../../../core/services/motion.service';
+import { StageService } from '../../../core/three/stage.service';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
 const STAGES = [
   {
@@ -23,7 +27,7 @@ const STAGES = [
   {
     id: 'build',
     title: 'Build',
-    body: 'Ship the smallest honest version of the interface, with the accessibility contract in it.',
+    body: 'Ship the smallest honest version of the interface, with the accessibility contract inside it.',
   },
   {
     id: 'stress-test',
@@ -40,60 +44,153 @@ const STAGES = [
 /**
  * WORKING METHOD
  * ---------------------------------------------------------------------------
- * A horizontal editorial lifecycle rather than a five-card process. The
- * connecting rule draws itself on scroll; each stage carries one sentence and
- * nothing else.
+ * The lifecycle as a pinned horizontal track: the five stages travel sideways
+ * while the section holds still, so the reader experiences the method as a
+ * sequence rather than a list. The artifact drops back to a wireframe blueprint
+ * underneath — the drawing on the desk while the stages move across it.
+ *
+ * Below the tablet breakpoint, or under reduced motion, the same markup becomes
+ * a horizontal snap-scroller the reader drives with their thumb.
  */
 @Component({
   selector: 'app-method',
   standalone: true,
+  imports: [RevealDirective],
   templateUrl: './method.component.html',
   styleUrl: './method.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Method implements OnDestroy {
   protected readonly stages = STAGES;
+  /**
+   * The stage counter. Deliberately the *only* signal the scrub writes: it
+   * changes a handful of times per pass, where the progress bar changes on every
+   * frame. A per-frame signal write would drag the whole page through change
+   * detection while the section is pinned, so the bar is painted by the timeline
+   * itself instead (see `play()`).
+   */
+  protected readonly activeStage = signal(1);
 
-  private readonly host: HTMLElement = inject(ElementRef).nativeElement as HTMLElement;
+  private readonly progressBarRef =
+    viewChild.required<ElementRef<HTMLElement>>('progressBar');
+  private readonly host = inject(ElementRef).nativeElement as HTMLElement;
   private readonly motion = inject(MotionService);
-  private readonly scope = this.motion.scope(inject(ElementRef).nativeElement as HTMLElement);
+  private readonly stage = inject(StageService);
+  private readonly scope = this.motion.scope(this.host);
 
   constructor() {
-    afterNextRender(() => void this.reveal());
+    afterNextRender(() => this.play());
   }
 
   ngOnDestroy(): void {
     this.scope.revert();
+    this.section?.classList.remove('method--motion');
   }
 
-  private async reveal(): Promise<void> {
-    if (!this.motion.motionAllowed()) {
+  /** See Story: the register class must live on an encapsulated template node. */
+  private get section(): HTMLElement | null {
+    return this.host.querySelector<HTMLElement>('.method');
+  }
+
+  /** The element the timeline paints the scrub progress onto. */
+  private progressBar(): HTMLElement {
+    return this.progressBarRef().nativeElement;
+  }
+
+  private play(): void {
+    if (!this.motion.motionAllowed() || window.innerWidth < 900) {
       return;
     }
 
-    await nextFrame();
+    const pin = this.host.querySelector<HTMLElement>('[data-method-pin]');
+    const track = this.host.querySelector<HTMLElement>('[data-method-track]');
+    const viewport = this.host.querySelector<HTMLElement>('[data-method-viewport]');
+    const head = this.host.querySelector<HTMLElement>('[data-method-head]');
+    const stages = Array.from(this.host.querySelectorAll<HTMLElement>('[data-method-stage]'));
+    if (!pin || !track || !viewport || !stages.length) {
+      return;
+    }
+
+    /** How far the track has to travel to show its last stage. */
+    const distance = (): number => Math.max(0, track.scrollWidth - viewport.clientWidth);
+
+    const section = this.section;
+    if (!section) {
+      return;
+    }
+
     this.scope.run(() => {
-      const root = this.host;
-      const line = root.querySelector<HTMLElement>('[data-method-line]');
+      section.classList.add('method--motion');
 
-      if (line) {
-        gsap.from(line, {
-          scaleX: 0,
-          transformOrigin: 'left center',
-          duration: 1.1,
-          ease: 'power2.inOut',
-          scrollTrigger: { trigger: root, start: 'top 78%', once: true },
-        });
-      }
-
-      gsap.from(root.querySelectorAll('[data-method-stage]'), {
-        opacity: 0,
-        y: 14,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.07,
-        scrollTrigger: { trigger: root, start: 'top 76%', once: true },
+      const timeline = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: this.host,
+          start: 'top top',
+          end: () => `+=${distance() * 1.15 + window.innerHeight * 0.35}`,
+          scrub: 0.6,
+          pin,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const index = Math.min(
+              stages.length,
+              Math.max(1, Math.round(self.progress * (stages.length - 1)) + 1),
+            );
+            if (index !== this.activeStage()) {
+              this.activeStage.set(index);
+            }
+          },
+        },
       });
+
+      // One unit of the timeline per stage transition, so a stage's "arrival"
+      // always coincides with its arrival at the centre of the viewport.
+      const total = stages.length - 1 + 0.1;
+
+      timeline
+        .to(track, { x: () => -distance(), duration: total }, 0)
+        .to(head, { yPercent: -6, opacity: 0.5, duration: total }, 0)
+        .to(
+          this.stage.params,
+          {
+            x: 0.1,
+            y: -0.12,
+            scale: 1.24,
+            energy: 0.16,
+            wire: 0.9,
+            glow: 0.42,
+            spin: 0.5,
+            opacity: 0.42,
+            spread: 1.35,
+            duration: total,
+          },
+          0,
+        );
+
+      // The bars are given their start value by GSAP rather than by the
+      // stylesheet: a `to()` tween has to be able to read where it starts, and
+      // owning that value here keeps the animation the single source of truth.
+      gsap.set(this.progressBar(), { scaleX: 0 });
+      gsap.set(stages, { opacity: 0.38, scale: 0.975, transformOrigin: 'left center' });
+      stages.forEach((element, index) => {
+        const at = Math.max(0, index - 0.45);
+        timeline.to(element, { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' }, at);
+        const previous = stages[index - 1];
+        if (previous) {
+          timeline.to(previous, { opacity: 0.38, scale: 0.975, duration: 0.5 }, at);
+        }
+      });
+
+      // Added last and matched to the duration the choreography already
+      // established, so the bar tracks the section instead of stretching its
+      // scroll range to fit itself.
+      timeline.to(
+        this.progressBar(),
+        { scaleX: 1, duration: timeline.duration(), ease: 'none' },
+        0,
+      );
     });
   }
 }

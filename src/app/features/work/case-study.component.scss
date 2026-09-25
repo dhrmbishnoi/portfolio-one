@@ -5,7 +5,7 @@
 // --------------------------------------------------------------- masthead
 
 .case__masthead {
-  padding-block: clamp(2.5rem, 6vh, 5rem) clamp(2.5rem, 5vh, 4rem);
+  padding-block: var(--page-top) clamp(2.5rem, 5vh, 4rem);
   border-bottom: 1px solid var(--border-strong);
 }
 

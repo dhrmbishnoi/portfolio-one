@@ -9,24 +9,28 @@ import {
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SITE } from '../../../core/config/site.config';
+import { MotionService } from '../../../core/services/motion.service';
+import { SmoothScrollService } from '../../../core/services/smooth-scroll.service';
+import { MagneticDirective } from '../../directives/magnetic.directive';
 
 interface HeaderState {
   readonly scrolled: boolean;
+  readonly hidden: boolean;
   readonly menuOpen: boolean;
 }
 
 /**
  * SITE HEADER
  * ---------------------------------------------------------------------------
- * Minimal, sticky and almost editorial at rest. On scroll it gains a surface
- * shift and a thin bottom rule — no glass blur, no shadow. The active route is
- * marked with a short accent indicator; the mobile menu is a full editorial
- * panel with focus containment and Escape-to-close.
+ * A floating glass bar over the dark stage. It retreats as the reader descends
+ * — the story is the subject, not the navigation — and returns the moment they
+ * scroll back up. The mobile menu is a full-height editorial panel that locks
+ * the scroller, moves focus in, and closes on Escape.
  */
 @Component({
   selector: 'app-site-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, MagneticDirective],
   templateUrl: './site-header.component.html',
   styleUrl: './site-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,37 +41,58 @@ interface HeaderState {
 })
 export class SiteHeader implements OnInit {
   protected readonly site = SITE;
-  protected readonly state = signal<HeaderState>({ scrolled: false, menuOpen: false });
+  protected readonly state = signal<HeaderState>({
+    scrolled: false,
+    hidden: false,
+    menuOpen: false,
+  });
 
-  protected readonly menuLabel = computed(() =>
-    this.state().menuOpen ? 'Close menu' : 'Open menu',
-  );
+  protected readonly menuLabel = computed(() => (this.state().menuOpen ? 'Close menu' : 'Open menu'));
 
   private readonly host = inject(ElementRef).nativeElement as HTMLElement;
+  private readonly scroll = inject(SmoothScrollService);
+  private readonly motion = inject(MotionService);
 
   ngOnInit(): void {
     this.onScroll();
   }
 
+  /**
+   * Retreat on the way down, return on the way up. The header is translated
+   * rather than removed, so it never re-enters the layout.
+   *
+   * Deliberately *not* an effect: the state is written from the scroll handler
+   * and only when a value actually changes, so a scroll frame can never cause a
+   * signal write that invalidates the thing that produced it.
+   */
   protected onScroll(): void {
-    const scrolled = typeof window !== 'undefined' ? window.scrollY > 8 : false;
-    if (scrolled !== this.state().scrolled) {
-      this.state.update((current) => ({ ...current, scrolled }));
+    const y = typeof window !== 'undefined' ? window.scrollY : 0;
+    const current = this.state();
+    const scrolled = y > 12;
+    const hidden = this.motion.motionAllowed() && !current.menuOpen && this.scroll.direction() === 1 && y > 320;
+
+    if (scrolled !== current.scrolled || hidden !== current.hidden) {
+      this.state.update((state) => ({ ...state, scrolled, hidden }));
     }
   }
 
   protected toggleMenu(): void {
-    this.state.update((current) => ({ ...current, menuOpen: !current.menuOpen }));
-    if (this.state().menuOpen) {
+    const open = !this.state().menuOpen;
+    this.state.update((current) => ({ ...current, menuOpen: open, hidden: false }));
+    if (open) {
+      this.scroll.stop();
       // Move focus into the panel so keyboard users are not left behind.
       requestAnimationFrame(() => {
         this.panel?.querySelector<HTMLElement>('a, button')?.focus();
       });
+    } else {
+      this.scroll.start();
     }
   }
 
   protected closeMenu(): void {
     this.state.update((current) => ({ ...current, menuOpen: false }));
+    this.scroll.start();
   }
 
   protected onKeydown(event: KeyboardEvent): void {

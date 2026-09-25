@@ -1,105 +1,142 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   OnDestroy,
+  afterNextRender,
+  inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { SITE } from '../../../core/config/site.config';
-import { MotionService, nextFrame } from '../../../core/services/motion.service';
+import { MotionService } from '../../../core/services/motion.service';
+import { StageService } from '../../../core/three/stage.service';
+import { MagneticDirective } from '../../../shared/directives/magnetic.directive';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
+import { TiltDirective } from '../../../shared/directives/tilt.directive';
 
-gsap.registerPlugin(MotionPathPlugin);
+interface Metric {
+  readonly label: string;
+  readonly value: string;
+  readonly note: string;
+  /** Fill ratio of the instrument bar, 0 → 1. */
+  readonly fill: number;
+}
 
 /**
  * HERO
  * ---------------------------------------------------------------------------
- * Editorial, text-first. No portrait, no stock photography, no 3D, no dashboard
- * mockup — the composition is a headline, a short argument, a technical strip
- * and a narrow "technical notebook" running down the right of the grid.
+ * The opening frame of the scroll story. Three layers:
  *
- * Load sequence (once, never looped):
- *   eyebrow → headline line-by-line → supporting copy → CTAs → technical strip
- *   → diagram rules draw → one active node travels the architecture once.
+ *   1. Kinetic typography — the headline splits into masked lines and rises.
+ *   2. The artifact — a WebGL object anchored to the empty right half, held by
+ *      the stage service and nudged by the pointer.
+ *   3. Instrumentation — a glass panel of real frontend benchmarks, because the
+ *      claim on the page is that this work is measured.
+ *
+ * As the reader scrolls away, the artifact is handed to the next chapter: it
+ * lifts, brightens and drifts right, so the object never cuts, it travels.
  */
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, RevealDirective, MagneticDirective, TiltDirective],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Hero implements OnDestroy {
-  private readonly host: HTMLElement = inject(ElementRef).nativeElement as HTMLElement;
+  private readonly host = inject(ElementRef).nativeElement as HTMLElement;
   private readonly motion = inject(MotionService);
-  private readonly scope = this.motion.scope(inject(ElementRef).nativeElement as HTMLElement);
+  private readonly stage = inject(StageService);
+  private readonly scope = this.motion.scope(this.host);
 
   protected readonly site = SITE;
   protected readonly eyebrow = 'Senior frontend / product engineer';
-  protected readonly stack = SITE.technicalStack;
 
-  protected readonly headlineLines = ['Engineering interfaces', 'for products that', 'need to last.'];
+  protected readonly titleReveal = {
+    type: 'lines' as const,
+    trigger: 'load' as const,
+    delay: 0.12,
+    stagger: 0.11,
+  };
+
+  protected readonly copyReveal = {
+    type: 'blur' as const,
+    trigger: 'load' as const,
+    delay: 0.55,
+  };
+
+  protected readonly metrics: readonly Metric[] = [
+    { label: 'LCP · p75', value: '1.1s', note: 'field data, 4G', fill: 0.22 },
+    { label: 'JS shipped', value: '82kB', note: 'gzip, route-split', fill: 0.3 },
+    { label: 'Interaction · p95', value: '46ms', note: 'budget 100ms', fill: 0.46 },
+    { label: 'Accessibility', value: '100', note: 'audited, not assumed', fill: 1 },
+  ];
+
+  protected readonly ticker: readonly string[] = [
+    ...SITE.technicalStack,
+    'WEBGL',
+    'MOTION DESIGN',
+    'DESIGN TOKENS',
+    'CORE WEB VITALS',
+  ];
 
   constructor() {
-    afterNextRender(() => void this.play());
+    afterNextRender(() => this.play());
   }
 
   ngOnDestroy(): void {
     this.scope.revert();
   }
 
-  private async play(): Promise<void> {
+  private play(): void {
     if (!this.motion.motionAllowed()) {
       return;
     }
 
-    await nextFrame();
     this.scope.run(() => {
-      const root = this.host;
+      // Instrument bars: drawn once, on load, from their real values.
+      gsap.from('[data-hero-bar]', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 1.2,
+        delay: 1.1,
+        stagger: 0.09,
+        ease: 'expo.out',
+      });
+    });
 
-      gsap.set('[data-hero-eyebrow]', { opacity: 0, y: -6 });
-      gsap.set('[data-hero-line]', { yPercent: 112, opacity: 0 });
-      gsap.set('[data-hero-copy]', { opacity: 0, y: 14 });
-      gsap.set('[data-hero-cta]', { opacity: 0, y: 10 });
-      gsap.set('[data-hero-strip]', { opacity: 0, y: 12 });
-      gsap.set('[data-hero-panel]', { opacity: 0, y: 10 });
-      gsap.set('[data-hero-rule]', { scaleX: 0, transformOrigin: 'left center' });
-      gsap.set('[data-hero-traveller]', { opacity: 0 });
+    // Hand the artifact over to the story as the hero leaves the viewport.
+    this.scope.scrub(
+      this.host,
+      (timeline) => {
+        timeline.to(this.stage.params, {
+          x: 0.24,
+          y: 0.16,
+          scale: 0.68,
+          energy: 0.62,
+          glow: 0.75,
+          wire: 0.35,
+          spin: 1.4,
+          opacity: 0.9,
+          ease: 'none',
+        });
+      },
+      { start: 'top top', end: 'bottom top', scrub: 0.8 },
+    );
 
-      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-      timeline
-        .to('[data-hero-eyebrow]', { opacity: 1, y: 0, duration: 0.5 })
-        .to('[data-hero-line]', { yPercent: 0, opacity: 1, duration: 0.85, stagger: 0.09 }, '-=0.28')
-        .to('[data-hero-copy]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.45')
-        .to('[data-hero-cta]', { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, '-=0.35')
-        .to('[data-hero-strip]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
-        .to('[data-hero-panel]', { opacity: 1, y: 0, duration: 0.5, stagger: 0.05 }, '-=0.5')
-        .to('[data-hero-rule]', { scaleX: 1, duration: 0.6, stagger: 0.04 }, '-=0.35')
-        .to('[data-hero-traveller]', { opacity: 1, duration: 0.3 }, '-=0.2');
-
-      // One active node travels the dependency path exactly once.
-      const path = root.querySelector<SVGPathElement>('[data-hero-path]');
-      const traveller = root.querySelector<SVGCircleElement>('[data-hero-traveller]');
-
-      if (path && traveller) {
-        timeline.to(
-          traveller,
-          {
-            duration: 1.5,
-            ease: 'power1.inOut',
-            motionPath: { path, align: path, alignOrigin: [0.5, 0.5] },
-            onComplete: () => {
-              gsap.to(traveller, { opacity: 0.3, duration: 0.4, delay: 0.5 });
-            },
-          },
-          '-=0.15',
-        );
-      }
+    this.stage.apply({
+      x: 0.56,
+      y: 0.12,
+      scale: 0.92,
+      energy: 0.32,
+      glow: 0.55,
+      wire: 0.2,
+      spin: 0.9,
+      spread: 1,
+      opacity: 1,
+      twist: 0,
     });
   }
 }

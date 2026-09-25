@@ -12,6 +12,8 @@ import { FORGE_VISUALS } from '../../../core/data/projects.data';
 import { MotionService, nextFrame } from '../../../core/services/motion.service';
 import { TechnicalDiagram } from '../../../shared/components/technical-diagram/technical-diagram.component';
 import { CodeBlock } from '../../../shared/components/code-block/code-block.component';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
+import { TiltDirective } from '../../../shared/directives/tilt.directive';
 
 /**
  * PROJECT 02 — FORGE
@@ -23,7 +25,7 @@ import { CodeBlock } from '../../../shared/components/code-block/code-block.comp
 @Component({
   selector: 'app-project-forge',
   standalone: true,
-  imports: [RouterLink, TechnicalDiagram, CodeBlock],
+  imports: [RouterLink, TechnicalDiagram, CodeBlock, RevealDirective, TiltDirective],
   templateUrl: './project-forge.component.html',
   styleUrl: './project-forge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

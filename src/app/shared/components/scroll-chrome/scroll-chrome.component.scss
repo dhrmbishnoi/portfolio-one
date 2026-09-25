@@ -1,0 +1,116 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-chrome);
+  pointer-events: none;
+}
+
+// ------------------------------------------------------------------ progress
+
+.progress {
+  position: absolute;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.progress__bar {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--grad-brand);
+  box-shadow: 0 0 14px rgba(215, 255, 79, 0.5);
+  will-change: transform;
+}
+
+// ----------------------------------------------------------------- chapter rail
+
+.rail {
+  position: absolute;
+  top: 50%;
+  right: clamp(0.75rem, 1.6vw, 1.75rem);
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+.rail__list {
+  display: grid;
+  gap: 2px;
+}
+
+.rail__button {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: end;
+  gap: var(--space-3);
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-pill);
+  color: var(--fg-muted);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.rail__index {
+  font-size: 0.5625rem;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.rail__label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(8px);
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
+}
+
+.rail__dot {
+  width: 22px;
+  height: 1px;
+  background-color: currentColor;
+  transition:
+    width var(--dur-3) var(--ease-out),
+    background-color var(--dur-3) var(--ease-out);
+}
+
+.rail:hover .rail__label,
+.rail:hover .rail__index,
+.rail__button--active .rail__label,
+.rail__button--active .rail__index,
+.rail__button:focus-visible .rail__label,
+.rail__button:focus-visible .rail__index {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.rail__button:hover {
+  color: var(--fg);
+}
+
+.rail__button--active {
+  color: var(--accent);
+}
+
+.rail__button--active .rail__dot {
+  width: 40px;
+  box-shadow: 0 0 12px rgba(215, 255, 79, 0.6);
+}
+
+// The rail needs the right margin to spare; below 1280px it would crowd the
+// measure, so the progress bar carries the narrative alone.
+@media (max-width: 1279px) {
+  .rail {
+    display: none;
+  }
+}

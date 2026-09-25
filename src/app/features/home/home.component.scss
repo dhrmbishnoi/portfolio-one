@@ -1,3 +1,8 @@
 :host {
   display: block;
+  position: relative;
+  // The document is the stage: the fixed WebGL canvas reads through every
+  // `.cinema` section, so the home page must never paint an opaque backdrop of
+  // its own.
+  background-color: transparent;
 }

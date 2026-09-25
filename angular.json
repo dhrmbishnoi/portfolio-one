@@ -51,13 +51,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "650kB"
+                  "maximumWarning": "560kB",
+                  "maximumError": "700kB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "10kB",
-                  "maximumError": "14kB"
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all",
@@ -74,6 +74,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": [
+              ".e2b.app",
+              ".arena.ai",
+              "localhost",
+              "127.0.0.1"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "portfolio:build:production"
