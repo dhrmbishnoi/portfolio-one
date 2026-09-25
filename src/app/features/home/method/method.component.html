@@ -32,7 +32,7 @@
 
       <div class="method__progress" aria-hidden="true">
         <span class="method__progress-rail">
-          <span class="method__progress-bar" [style.transform]="'scaleX(' + progress() + ')'"></span>
+          <span class="method__progress-bar" #progressBar></span>
         </span>
         <span class="label method__progress-label num">
           {{ activeStage() }}/{{ stages.length }}

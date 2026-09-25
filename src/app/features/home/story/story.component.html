@@ -71,7 +71,7 @@
       <!-- ------------------------------------------------------- progress -->
       <div class="story__progress" aria-hidden="true">
         <span class="story__progress-rail">
-          <span class="story__progress-bar" [style.transform]="'scaleX(' + progress() + ')'"></span>
+          <span class="story__progress-bar" #progressBar></span>
         </span>
         <span class="label story__progress-label num"
           >{{ active().index }} — {{ chapters.length < 10 ? '0' : '' }}{{ chapters.length }}</span

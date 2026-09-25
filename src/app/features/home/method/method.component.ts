@@ -6,6 +6,7 @@ import {
   afterNextRender,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { MotionService } from '../../../core/services/motion.service';
@@ -61,9 +62,17 @@ const STAGES = [
 })
 export class Method implements OnDestroy {
   protected readonly stages = STAGES;
-  protected readonly progress = signal(0);
+  /**
+   * The stage counter. Deliberately the *only* signal the scrub writes: it
+   * changes a handful of times per pass, where the progress bar changes on every
+   * frame. A per-frame signal write would drag the whole page through change
+   * detection while the section is pinned, so the bar is painted by the timeline
+   * itself instead (see `play()`).
+   */
   protected readonly activeStage = signal(1);
 
+  private readonly progressBarRef =
+    viewChild.required<ElementRef<HTMLElement>>('progressBar');
   private readonly host = inject(ElementRef).nativeElement as HTMLElement;
   private readonly motion = inject(MotionService);
   private readonly stage = inject(StageService);
@@ -81,6 +90,11 @@ export class Method implements OnDestroy {
   /** See Story: the register class must live on an encapsulated template node. */
   private get section(): HTMLElement | null {
     return this.host.querySelector<HTMLElement>('.method');
+  }
+
+  /** The element the timeline paints the scrub progress onto. */
+  private progressBar(): HTMLElement {
+    return this.progressBarRef().nativeElement;
   }
 
   private play(): void {
@@ -120,7 +134,6 @@ export class Method implements OnDestroy {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            this.progress.set(Number(self.progress.toFixed(3)));
             const index = Math.min(
               stages.length,
               Math.max(1, Math.round(self.progress * (stages.length - 1)) + 1),
@@ -156,6 +169,10 @@ export class Method implements OnDestroy {
           0,
         );
 
+      // The bars are given their start value by GSAP rather than by the
+      // stylesheet: a `to()` tween has to be able to read where it starts, and
+      // owning that value here keeps the animation the single source of truth.
+      gsap.set(this.progressBar(), { scaleX: 0 });
       gsap.set(stages, { opacity: 0.38, scale: 0.975, transformOrigin: 'left center' });
       stages.forEach((element, index) => {
         const at = Math.max(0, index - 0.45);
@@ -165,6 +182,15 @@ export class Method implements OnDestroy {
           timeline.to(previous, { opacity: 0.38, scale: 0.975, duration: 0.5 }, at);
         }
       });
+
+      // Added last and matched to the duration the choreography already
+      // established, so the bar tracks the section instead of stretching its
+      // scroll range to fit itself.
+      timeline.to(
+        this.progressBar(),
+        { scaleX: 1, duration: timeline.duration(), ease: 'none' },
+        0,
+      );
     });
   }
 }

@@ -7,6 +7,7 @@ import {
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { STORY_CHAPTERS } from '../../../core/narrative';
@@ -43,13 +44,19 @@ export class Story implements OnDestroy {
   private readonly scope = this.motion.scope(this.host);
 
   protected readonly chapters = STORY_CHAPTERS;
+  /**
+   * Which chapter is centre-stage. The only signal the scrub writes, and only
+   * when it actually changes — the chapter bodies, the meter and the ghost
+   * numeral all read from it, so it has to be reactive. The progress bar does
+   * not: it changes on every frame, so the timeline paints it directly instead.
+   */
   protected readonly activeIndex = signal(0);
   /** True once the pinned timeline owns the layout. */
   protected readonly ready = signal(false);
-  /** Scrub progress, 0 → 1, driving the chapter progress bar. */
-  protected readonly progress = signal(0);
 
   protected readonly active = computed(() => this.chapters[this.activeIndex()]!);
+
+  private readonly progressBarRef = viewChild.required<ElementRef<HTMLElement>>('progressBar');
 
   constructor() {
     afterNextRender(() => this.play());
@@ -96,6 +103,10 @@ export class Story implements OnDestroy {
       this.ready.set(true);
 
       const [first, ...rest] = panels;
+      // The bars are given their start value by GSAP rather than by the
+      // stylesheet: a `to()` tween has to be able to read where it starts, and
+      // owning that value here keeps the animation the single source of truth.
+      gsap.set(this.progressBarRef().nativeElement, { scaleX: 0 });
       gsap.set(panels, { opacity: 0, y: 90, filter: 'blur(14px)' });
       gsap.set(first!, { opacity: 1, y: 0, filter: 'blur(0px)' });
       gsap.set(ghost, { opacity: 0.08 });
@@ -112,7 +123,6 @@ export class Story implements OnDestroy {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            this.progress.set(Number(self.progress.toFixed(3)));
             const index = Math.min(
               this.chapters.length - 1,
               Math.round(self.progress * (this.chapters.length - 1) * 1.06),
@@ -146,6 +156,17 @@ export class Story implements OnDestroy {
             at + 0.1,
           );
       });
+
+      // The progress bar is a tween target, not a signal: GSAP writes the
+      // transform straight to the element, so scrubbing the story costs no
+      // Angular work at all. It is added last and matched to the duration the
+      // chapter choreography already established, so it tracks the story
+      // exactly instead of stretching the scroll range to fit itself.
+      timeline.to(
+        this.progressBarRef().nativeElement,
+        { scaleX: 1, duration: timeline.duration(), ease: 'none' },
+        0,
+      );
     });
   }
 }

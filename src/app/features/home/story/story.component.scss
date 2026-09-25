@@ -232,6 +232,9 @@
   display: block;
   height: 100%;
   transform-origin: left center;
+  // The timeline owns the scale; without an explicit start it would flash full
+  // width for one frame before the scrub takes over.
+  transform: scaleX(0);
   background: var(--grad-brand);
   will-change: transform;
 }
