@@ -28,6 +28,9 @@ import { CodeBlock } from '../../shared/components/code-block/code-block.compone
   templateUrl: './article.component.html',
   styleUrl: './article.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The inner pages stay in the daylight editorial register: the dark, cinematic
+  // treatment is the home narrative's voice, and the documents read better on paper.
+  host: { class: 'on-paper' },
 })
 export class ArticleComponent {
   private readonly route = inject(ActivatedRoute);

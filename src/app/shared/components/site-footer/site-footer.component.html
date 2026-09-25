@@ -1,16 +1,24 @@
 <footer class="footer" aria-labelledby="footer-heading">
   <h2 id="footer-heading" class="visually-hidden">Site footer</h2>
 
-  <div class="footer__rule" aria-hidden="true"></div>
+  <!-- Closing ticker: the last thing that moves on the page. -->
+  <div class="footer__ticker marquee" aria-hidden="true">
+    <div class="marquee__track">
+      @for (item of ticker; track $index) {
+        <span class="footer__ticker-item">
+          {{ item }}
+          <span class="footer__ticker-sep">◆</span>
+        </span>
+      }
+    </div>
+  </div>
 
   <div class="footer__inner shell">
     <div class="footer__identity">
       <p class="footer__mark" aria-hidden="true">{{ site.identity.monogram }}</p>
       <p class="footer__name">{{ site.identity.name }}</p>
       <p class="footer__role label">{{ site.identity.roleShort }}</p>
-      <p class="footer__meta label">
-        {{ site.identity.experience }} · {{ site.identity.location }}
-      </p>
+      <p class="footer__meta label">{{ site.identity.experience }} · {{ site.identity.location }}</p>
     </div>
 
     <nav class="footer__nav" aria-label="Footer">
@@ -19,12 +27,14 @@
         @for (item of site.footerNav; track item.path) {
           <li>
             <a
-              class="link link--muted"
+              class="footer__link"
               [routerLink]="item.path"
               routerLinkActive="footer__link--active"
               [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-              >{{ item.label }}</a
             >
+              <span class="footer__link-mark" aria-hidden="true"></span>
+              {{ item.label }}
+            </a>
           </li>
         }
       </ul>
@@ -35,7 +45,13 @@
       <ul class="footer__list">
         @for (link of site.externalLinks; track link.href) {
           <li>
-            <a class="link link--muted" [href]="link.href" [attr.target]="isExternal(link.href) ? '_blank' : null" [attr.rel]="isExternal(link.href) ? 'noreferrer noopener' : null">
+            <a
+              class="footer__link"
+              [href]="link.href"
+              [attr.target]="isExternal(link.href) ? '_blank' : null"
+              [attr.rel]="isExternal(link.href) ? 'noreferrer noopener' : null"
+            >
+              <span class="footer__link-mark" aria-hidden="true"></span>
               {{ link.label }}
               @if (isExternal(link.href)) {
                 <span class="arrow" aria-hidden="true">↗</span>
@@ -48,13 +64,22 @@
 
     <div class="footer__end">
       <p class="label footer__heading">Top</p>
-      <button type="button" class="footer__top" (click)="backToTop()">
-        <span>Back to top</span>
-        <span class="arrow" aria-hidden="true">↑</span>
+      <button type="button" class="footer__top" (click)="backToTop()" appMagnetic>
+        <span class="magnetic__inner">
+          Back to top
+          <span class="arrow" aria-hidden="true">↑</span>
+        </span>
       </button>
-      <p class="footer__copy label">
-        © {{ year }} {{ site.copyrightHolder }}
-      </p>
+      <p class="footer__copy label">© {{ year }} {{ site.copyrightHolder }}</p>
     </div>
+  </div>
+
+  <div class="footer__base shell">
+    <p class="label footer__base-item">
+      Built with Angular, GSAP, Lenis and three.js — no page builders, no templates.
+    </p>
+    <p class="label footer__base-item">
+      Rendered live · artifact is a single WebGL draw call
+    </p>
   </div>
 </footer>

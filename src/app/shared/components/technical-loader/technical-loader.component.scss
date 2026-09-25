@@ -5,12 +5,15 @@
   display: grid;
   place-items: end start;
   padding: var(--pad-x);
-  background-color: var(--paper);
+  background:
+    radial-gradient(80% 60% at 70% 20%, rgba(124, 92, 255, 0.18), transparent 62%),
+    radial-gradient(60% 50% at 10% 90%, rgba(215, 255, 79, 0.12), transparent 60%),
+    var(--void);
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity var(--dur-3) var(--ease-out),
-    visibility var(--dur-3) var(--ease-out);
+    opacity var(--dur-4) var(--ease-out),
+    visibility var(--dur-4) var(--ease-out);
 }
 
 .loader[data-visible='true'] {
@@ -19,18 +22,22 @@
 }
 
 .loader__inner {
-  width: min(30rem, 100%);
+  width: min(32rem, 100%);
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  animation: fade-in var(--dur-4) var(--ease-out) both;
 }
 
 .loader__mark {
   font-family: var(--font-mono);
-  font-size: var(--step-4);
+  font-size: var(--step-5);
   font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--fg);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .loader__status {
@@ -51,25 +58,30 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background-color: var(--accent-dark);
+  background-color: var(--accent);
+  animation: status-ping 2s var(--ease-out) infinite;
 }
 
 .loader__value {
-  font-size: var(--step--2);
-  color: var(--fg-muted);
+  font-size: var(--step-1);
+  color: var(--fg);
+  letter-spacing: -0.03em;
 }
 
 .loader__track {
   position: relative;
-  height: 1px;
-  background-color: var(--border);
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.09);
   overflow: hidden;
 }
 
 .loader__bar {
   position: absolute;
   inset: 0;
-  background-color: var(--ink);
+  border-radius: inherit;
+  background: var(--grad-brand);
+  box-shadow: 0 0 18px rgba(55, 232, 213, 0.55);
   transform: scaleX(var(--progress, 0));
   transform-origin: left center;
   transition: transform var(--dur-3) var(--ease-out);
@@ -80,7 +92,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loader__bar {
+  .loader__bar,
+  .loader__dot,
+  .loader__inner {
     transition: none;
+    animation: none;
   }
 }

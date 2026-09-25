@@ -1,15 +1,28 @@
+// The chrome over the dark stage: a floating glass bar that retreats while the
+// reader descends and returns the moment they scroll back up.
+
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: var(--z-header);
-  background-color: color-mix(in srgb, var(--paper) 88%, transparent);
+  background-color: transparent;
   transition:
+    transform var(--dur-4) var(--ease-out),
     background-color var(--dur-3) var(--ease-out),
-    box-shadow var(--dur-3) var(--ease-out);
+    backdrop-filter var(--dur-3) var(--ease-out);
+  will-change: transform;
 }
 
 .header--scrolled {
-  background-color: var(--surface);
+  background-color: rgba(5, 7, 13, 0.66);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+.header--hidden {
+  transform: translateY(-101%);
 }
 
 .header__inner {
@@ -27,7 +40,7 @@
 }
 
 .header--scrolled .header__rule {
-  background-color: var(--border-strong);
+  background-color: var(--border-faint);
 }
 
 // ----------------------------------------------------------------- identity
@@ -40,26 +53,45 @@
 }
 
 .identity__mark {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--border-strong);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--glass);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--fg);
+  overflow: hidden;
   transition:
     background-color var(--dur-2) var(--ease-out),
-    color var(--dur-2) var(--ease-out),
     border-color var(--dur-2) var(--ease-out);
 }
 
+.identity__monogram {
+  position: relative;
+  z-index: 1;
+}
+
+.identity__mark-glow {
+  position: absolute;
+  inset: -40%;
+  background: var(--grad-brand);
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
 .identity:hover .identity__mark {
-  background-color: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  border-color: var(--accent);
+}
+
+.identity:hover .identity__mark-glow {
+  opacity: 0.55;
 }
 
 .identity__text {
@@ -85,25 +117,36 @@
 
 .nav {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: clamp(var(--space-4), 2.4vw, var(--space-7));
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--space-3), 1.8vw, var(--space-6));
 }
 
 .nav__link {
   position: relative;
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.4em;
-  padding-block: var(--space-3);
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-pill);
   font-size: var(--step--1);
   color: var(--fg-secondary);
-  transition: color var(--dur-2) var(--ease-out);
+  transition:
+    color var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
 }
 
 .nav__link:hover,
 .nav__link--active {
   color: var(--fg);
+}
+
+.nav__link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav__index {
@@ -115,25 +158,25 @@
 }
 
 .nav__link--active .nav__index {
-  color: var(--accent-dark);
+  color: var(--accent);
 }
 
-// Active indicator: a short rule that draws in under the label.
-.nav__link::after {
+// Active indicator: a dot that lights up beside the label.
+.nav__link--active::before {
   content: '';
   position: absolute;
-  left: 0;
-  bottom: 0.55rem;
-  width: 100%;
-  height: 1px;
-  background-color: var(--accent-dark);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-3) var(--ease-out);
+  left: 0.1rem;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  transform: translateY(-50%);
+  box-shadow: 0 0 10px rgba(215, 255, 79, 0.9);
 }
 
-.nav__link--active::after {
-  transform: scaleX(1);
+.nav__link--active {
+  padding-left: 1rem;
 }
 
 // ------------------------------------------------------------------- right
@@ -149,6 +192,24 @@
   display: inline;
 }
 
+.header__cta {
+  --btn-bg: var(--glass);
+  --btn-fg: var(--fg);
+  --btn-border: var(--border-strong);
+  --btn-glow: none;
+
+  min-height: 2.5rem;
+  padding-inline: var(--space-5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  &:hover {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--accent-ink);
+    --btn-border: transparent;
+  }
+}
+
 // ------------------------------------------------------------- menu toggle
 
 .menu-toggle {
@@ -156,18 +217,19 @@
   align-items: center;
   gap: var(--space-3);
   min-height: 2.75rem;
-  padding-inline: var(--space-2);
-  border: 1px solid transparent;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
   transition: border-color var(--dur-2) var(--ease-out);
 }
 
 .menu-toggle:hover {
-  border-color: var(--border);
+  border-color: var(--border-strong);
 }
 
 .menu-toggle__bars {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   width: 18px;
 }
 
@@ -179,27 +241,32 @@
 }
 
 .header[data-menu-open='true'] .menu-toggle__bars span:first-child {
-  transform: translateY(2.5px) rotate(12deg);
+  transform: translateY(3px) rotate(12deg);
 }
 
 .header[data-menu-open='true'] .menu-toggle__bars span:last-child {
-  transform: translateY(-2.5px) rotate(-12deg);
+  transform: translateY(-3px) rotate(-12deg);
 }
 
 // ------------------------------------------------------------- mobile menu
 
 .menu {
   position: fixed;
-  inset: var(--header-h) 0 0;
+  inset: 0;
   z-index: var(--z-menu);
-  background-color: var(--paper);
+  background:
+    radial-gradient(90% 60% at 80% 0%, rgba(124, 92, 255, 0.22), transparent 60%),
+    radial-gradient(70% 50% at 0% 100%, rgba(215, 255, 79, 0.12), transparent 60%),
+    rgba(4, 5, 9, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-8px);
+  transform: translateY(-2%);
   transition:
     opacity var(--dur-3) var(--ease-out),
-    transform var(--dur-3) var(--ease-out),
-    visibility var(--dur-3) var(--ease-out);
+    transform var(--dur-4) var(--ease-out),
+    visibility var(--dur-4) var(--ease-out);
   overflow-y: auto;
 }
 
@@ -212,7 +279,7 @@
 .menu__inner {
   display: grid;
   gap: var(--space-6);
-  padding-block: var(--space-7) var(--space-9);
+  padding-block: calc(var(--header-h) + var(--space-6)) var(--space-9);
 }
 
 .menu__list {
@@ -220,11 +287,11 @@
 }
 
 .menu__item {
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--border-faint);
 }
 
 .menu__item:last-child {
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--border-faint);
 }
 
 .menu__link {
@@ -233,6 +300,11 @@
   align-items: baseline;
   gap: var(--space-3);
   padding-block: var(--space-5);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+
+.menu__link:active {
+  transform: translateX(6px);
 }
 
 .menu__index {
@@ -240,10 +312,10 @@
 }
 
 .menu__label {
-  font-family: var(--font-serif);
   font-size: var(--step-3);
-  letter-spacing: var(--tracking-tight);
-  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.02;
 }
 
 .menu__hint {
@@ -251,12 +323,8 @@
   color: var(--fg-muted);
 }
 
-.menu__link--active .menu__label {
-  font-style: italic;
-}
-
 .menu__link--active .menu__index {
-  color: var(--accent-dark);
+  color: var(--accent);
 }
 
 .menu__foot {
@@ -269,7 +337,7 @@
 
 // -------------------------------------------------------------- responsive
 
-@media (max-width: 1023px) {
+@media (max-width: 1099px) {
   .nav {
     display: none;
   }
@@ -279,18 +347,18 @@
   }
 }
 
+@media (max-width: 767px) {
+  .header__cta {
+    display: none;
+  }
+}
+
 @media (max-width: 599px) {
   .header__status-text {
     display: none;
   }
 
   .identity__role {
-    display: none;
-  }
-}
-
-@media (min-width: 1024px) {
-  .menu {
     display: none;
   }
 }

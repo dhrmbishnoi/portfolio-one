@@ -22,6 +22,9 @@ import { TechnicalDiagram } from '../../shared/components/technical-diagram/tech
   templateUrl: './case-study.component.html',
   styleUrl: './case-study.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The inner pages stay in the daylight editorial register: the dark, cinematic
+  // treatment is the home narrative's voice, and the documents read better on paper.
+  host: { class: 'on-paper' },
 })
 export class CaseStudyComponent {
   private readonly route = inject(ActivatedRoute);
