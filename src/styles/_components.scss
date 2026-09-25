@@ -69,72 +69,105 @@
 }
 
 // ---------------------------------------------------------------- buttons ---
+// A pill with a gradient hairline, an inner glass fill and a light sheen that
+// sweeps across on hover. The sheen is a pseudo-element so it never affects
+// layout or hit-testing.
 
 .btn {
-  --btn-bg: var(--ink);
-  --btn-fg: var(--paper);
-  --btn-border: var(--ink);
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-ink);
+  --btn-border: transparent;
+  --btn-glow: var(--glow-accent);
 
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.6em;
-  min-height: 2.875rem;
-  padding: 0 var(--space-5);
+  min-height: 3rem;
+  padding: 0 var(--space-6);
   background-color: var(--btn-bg);
   color: var(--btn-fg);
   border: 1px solid var(--btn-border);
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: var(--btn-glow);
   transition:
     background-color var(--dur-2) var(--ease-out),
     color var(--dur-2) var(--ease-out),
-    border-color var(--dur-2) var(--ease-out);
+    border-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out),
+    transform var(--dur-2) var(--ease-spring);
 
-  &:hover {
-    --btn-bg: var(--accent);
-    --btn-fg: var(--accent-ink);
-    --btn-border: var(--accent);
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: -50%;
+    width: 34%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: translateX(-160%) skewX(-14deg);
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    box-shadow:
+      var(--btn-glow),
+      0 22px 50px -24px rgba(215, 255, 79, 0.7);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    animation: sheen-sweep 900ms var(--ease-out);
+  }
+
+  &:active {
+    transform: scale(0.984);
   }
 }
 
 .btn--ghost {
-  --btn-bg: transparent;
+  --btn-bg: var(--glass);
   --btn-fg: var(--fg);
+  --btn-border: var(--border-strong);
+  --btn-glow: none;
+
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+
+  &:hover {
+    --btn-bg: rgba(255, 255, 255, 0.09);
+    --btn-border: var(--fg);
+  }
+}
+
+.btn--lg {
+  min-height: 3.5rem;
+  padding: 0 var(--space-7);
+  font-size: var(--step--1);
+}
+
+.on-paper .btn--ghost {
+  --btn-bg: rgba(255, 255, 255, 0.6);
   --btn-border: var(--border-strong);
 
   &:hover {
     --btn-bg: var(--ink);
     --btn-fg: var(--paper);
-    --btn-border: var(--ink);
   }
 }
 
-.on-dark .btn {
-  --btn-bg: var(--accent);
-  --btn-fg: var(--accent-ink);
-  --btn-border: var(--accent);
-
-  &:hover {
-    --btn-bg: transparent;
-    --btn-fg: var(--fg);
-    --btn-border: var(--accent);
-  }
-}
-
-.on-dark .btn--ghost {
-  --btn-bg: transparent;
-  --btn-fg: var(--fg);
-  --btn-border: var(--border-dark-strong);
-
-  &:hover {
-    --btn-bg: var(--accent);
-    --btn-fg: var(--accent-ink);
-    --btn-border: var(--accent);
-  }
+.on-paper .btn {
+  --btn-glow: 0 16px 40px -22px rgba(20, 20, 20, 0.45);
+  --btn-fg: #10180a;
 }
 
 // ------------------------------------------------------------- status dot ---
@@ -156,12 +189,28 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--accent-dark);
+  background-color: var(--accent);
   flex: none;
+  box-shadow: 0 0 0 0 rgba(215, 255, 79, 0.55);
+  animation: status-ping 2.6s var(--ease-out) infinite;
 }
 
-.on-dark .status__dot {
-  background-color: var(--accent);
+@keyframes status-ping {
+  0% {
+    box-shadow: 0 0 0 0 rgba(215, 255, 79, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(215, 255, 79, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(215, 255, 79, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status__dot {
+    animation: none;
+  }
 }
 
 // ------------------------------------------------------------------ chips ---
@@ -169,27 +218,66 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  height: 1.5rem;
-  padding: 0 0.5rem;
+  height: 1.75rem;
+  padding: 0 0.7rem;
   border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--fg-secondary);
   white-space: nowrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .chip--accent {
-  border-color: var(--accent-dark);
+  border-color: transparent;
   color: var(--accent-ink);
-  background-color: var(--accent);
+  background: var(--grad-brand);
 }
 
-.on-dark .chip--accent {
-  background-color: transparent;
-  border-color: var(--accent);
-  color: var(--accent);
+.on-paper .chip--accent {
+  color: #fff;
+}
+
+// ------------------------------------------------------------- glass panel ---
+// The workhorse surface of the dark register: a translucent pane with a
+// hairline gradient edge and a very soft interior light.
+
+.glass {
+  position: relative;
+  border-radius: var(--radius-3);
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+    var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  box-shadow: var(--shadow-2);
+}
+
+.glass--flat {
+  box-shadow: none;
+}
+
+.glass--interactive {
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-3), var(--glow-iris);
+  }
+}
+
+.on-paper .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(20, 20, 20, 0.12);
 }
 
 // ------------------------------------------------------------- meta pairs ---
@@ -236,15 +324,12 @@
 
 .code {
   border: 1px solid var(--rule);
-  background-color: var(--surface);
+  border-radius: var(--radius-2);
+  background-color: var(--glass-bg);
   font-family: var(--font-mono);
   font-size: var(--step--1);
   line-height: 1.65;
   overflow: hidden;
-}
-
-.on-dark .code {
-  background-color: var(--dark-elevated);
 }
 
 .code__bar {
@@ -254,11 +339,11 @@
   gap: var(--space-4);
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--rule);
-  background-color: rgba(20, 20, 20, 0.03);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
-.on-dark .code__bar {
-  background-color: rgba(255, 255, 255, 0.03);
+.on-paper .code__bar {
+  background-color: rgba(20, 20, 20, 0.03);
 }
 
 .code__file {
@@ -280,6 +365,7 @@
   color: var(--fg-secondary);
   padding: var(--space-1) var(--space-2);
   border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   transition:
     color var(--dur-1) var(--ease-out),
     border-color var(--dur-1) var(--ease-out),
@@ -311,39 +397,39 @@
 
 // Very small, dependency-free token colouring for code samples.
 .tok-key {
-  color: #6f5bd4;
+  color: #c3b4ff;
 }
 .tok-str {
-  color: #2f7d54;
+  color: #9fe6b8;
 }
 .tok-num {
-  color: #b4552b;
+  color: #f2b48c;
 }
 .tok-com {
   color: var(--fg-muted);
   font-style: italic;
 }
 .tok-fn {
-  color: #1f5f9e;
-}
-.tok-typ {
-  color: #8a5a1a;
-}
-
-.on-dark .tok-key {
-  color: #c3b4ff;
-}
-.on-dark .tok-str {
-  color: #9fe6b8;
-}
-.on-dark .tok-num {
-  color: #f2b48c;
-}
-.on-dark .tok-fn {
   color: #9ecbff;
 }
-.on-dark .tok-typ {
+.tok-typ {
   color: #f3d39a;
+}
+
+.on-paper .tok-key {
+  color: #6f5bd4;
+}
+.on-paper .tok-str {
+  color: #2f7d54;
+}
+.on-paper .tok-num {
+  color: #b4552b;
+}
+.on-paper .tok-fn {
+  color: #1f5f9e;
+}
+.on-paper .tok-typ {
+  color: #8a5a1a;
 }
 
 // ---------------------------------------------------------- diagram frames ---
@@ -351,11 +437,12 @@
 .diagram {
   position: relative;
   border: 1px solid var(--rule);
-  background-color: var(--surface);
+  border-radius: var(--radius-2);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
-.on-dark .diagram {
-  background-color: var(--dark-elevated);
+.on-paper .diagram {
+  background-color: var(--surface);
 }
 
 .diagram__head {
@@ -388,12 +475,8 @@
   width: 1.5rem;
   height: 1px;
   margin-top: 0.6em;
-  background-color: var(--accent-dark);
-  flex: none;
-}
-
-.on-dark .annotation__marker {
   background-color: var(--accent);
+  flex: none;
 }
 
 // ------------------------------------------------------------------- kbd ----
@@ -405,8 +488,9 @@
   padding: 0.1em 0.35em;
   border: 1px solid var(--rule);
   border-bottom-width: 2px;
+  border-radius: 5px;
   font-family: var(--font-mono);
   font-size: var(--step--2);
   color: var(--fg);
-  background-color: var(--surface);
+  background-color: var(--glass);
 }

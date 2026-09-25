@@ -1,6 +1,6 @@
 // ============================================================================
 //  LAYOUT
-//  12-column grid, 1480px shell, asymmetric by default.
+//  12-column grid, 1560px shell, asymmetric by default.
 //  Breakpoints: 390 / 768 / 1024 / 1440 / 1920
 // ============================================================================
 
@@ -13,13 +13,31 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  // Lenis owns smooth scrolling; native smooth-scroll would fight it.
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
   margin: 0;
   min-height: 100%;
-  overflow-x: hidden;
+  // `clip` rather than `hidden`: hidden turns the body into a scroll container,
+  // which is exactly the condition that breaks ScrollTrigger pinning. Clip
+  // removes the overflow without touching the scroll topology.
+  overflow-x: clip;
+  background-color: var(--stage);
 }
 
 img,
@@ -51,13 +69,25 @@ select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-dark);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
-.on-dark :focus-visible {
-  outline-color: var(--accent);
+.on-paper :focus-visible {
+  outline-color: #6f8c00;
+}
+
+// The system cursor is only hidden once <app-cursor> is genuinely live, which
+// is why the flag lives on <html> and is written by the component itself.
+html[data-cursor='custom'],
+html[data-cursor='custom'] * {
+  cursor: none;
+}
+
+html[data-cursor='custom'] input,
+html[data-cursor='custom'] textarea {
+  cursor: text;
 }
 
 // ------------------------------------------------------------------- shell
@@ -181,18 +211,18 @@ select {
   left: var(--space-3);
   z-index: calc(var(--z-loader) + 1);
   transform: translateY(-200%);
-  background-color: var(--ink);
-  color: var(--paper);
+  background-color: var(--accent);
+  color: var(--accent-ink);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  border-radius: var(--radius-pill);
   padding: var(--space-3) var(--space-5);
   transition: transform var(--dur-2) var(--ease-out);
 
   &:focus-visible {
     transform: translateY(0);
-    outline-color: var(--accent-dark);
   }
 }
 

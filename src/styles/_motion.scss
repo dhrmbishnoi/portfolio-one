@@ -1,10 +1,11 @@
 // ============================================================================
 //  MOTION
-//  Vocabulary: opacity · 8–20px translation · line drawing · mask reveal ·
-//  clip reveal · small scale settle · SVG path progress.
-//  Rules: no scroll hijacking, no heavy pinning, no endless loops, no bounce,
-//  no elastic. The default CSS state is ALWAYS the final readable state —
-//  animation is layered on top by GSAP only when motion is permitted.
+//  Vocabulary: opacity · translation · mask reveal · clip reveal · scale settle
+//  · scrub, pinned chapters, magnetic hover, tilt, marquee, WebGL.
+//
+//  Rules: the default CSS state is ALWAYS the final readable state — motion is
+//  layered on top by GSAP only when motion is permitted. Reduced motion kills
+//  every animation and the site degrades to a fast, static document.
 // ============================================================================
 
 @use 'tokens';
@@ -68,6 +69,52 @@
   }
 }
 
+// Slow drift used by ambient gradient orbs behind the artifact.
+@keyframes orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -4%, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-3%, 3%, 0) scale(0.97);
+  }
+}
+
+@keyframes marquee-run {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes sheen-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-45%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+}
+
 // --------------------------------------------------- reduced motion guard ---
 
 @media (prefers-reduced-motion: reduce) {
@@ -82,6 +129,18 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .marquee__track {
+    animation: none !important;
+  }
+
+  .cursor {
+    display: none !important;
+  }
+
+  .stage__canvas {
+    opacity: 0.35;
   }
 }
 
@@ -103,15 +162,146 @@
   clip-path: inset(0 0 100% 0);
 }
 
+// Line-split text: masked, offset, waiting for its timeline.
+[data-motion='ready'] .split__inner {
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+}
+
+// ------------------------------------------------------------ grain / noise ---
+// A single fixed layer of film grain over the whole document. Generated from an
+// inline SVG turbulence filter so there is no image request, and it sits above
+// the WebGL stage but below the content.
+
+.grain {
+  position: fixed;
+  inset: -6%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  animation: grain-shift 6s steps(6) infinite;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-2%, 1%, 0);
+  }
+  40% {
+    transform: translate3d(1%, -2%, 0);
+  }
+  60% {
+    transform: translate3d(-1%, 2%, 0);
+  }
+  80% {
+    transform: translate3d(2%, 1%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+}
+
+// Ambient gradient orbs — pure CSS colour, no images.
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+  animation: orb-drift 26s var(--ease-in-out) infinite;
+}
+
+.orb--accent {
+  background: radial-gradient(circle, rgba(215, 255, 79, 0.3), transparent 68%);
+}
+
+.orb--iris {
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.42), transparent 68%);
+  animation-duration: 34s;
+  animation-direction: reverse;
+}
+
+.orb--aqua {
+  background: radial-gradient(circle, rgba(55, 232, 213, 0.3), transparent 68%);
+  animation-duration: 40s;
+}
+
+// ---------------------------------------------------------------- marquee ---
+
+.marquee {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-7);
+  padding-right: var(--space-7);
+  min-width: 100%;
+  animation: marquee-run var(--marquee-duration, 34s) linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee--reverse .marquee__track {
+  animation-direction: reverse;
+}
+
+// -------------------------------------------------------------- scroll cue ---
+
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.scroll-cue__rail {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 2.75rem;
+  background-color: var(--border-strong);
+  overflow: hidden;
+}
+
+.scroll-cue__rail::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 45%;
+  background-color: var(--accent);
+  animation: scroll-cue 2.1s var(--ease-in-out) infinite;
+}
+
 // Thin animated line used for skeleton states.
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: rgba(20, 20, 20, 0.07);
-}
-
-.on-dark .skeleton {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--glass);
+  border-radius: var(--radius-1);
 }
 
 .skeleton::after {
@@ -121,22 +311,26 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(20, 20, 20, 0.09) 45%,
-    rgba(20, 20, 20, 0.13) 50%,
-    rgba(20, 20, 20, 0.09) 55%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
     transparent
   );
   transform: translateX(-100%);
   animation: trace-sweep 1.6s var(--ease-in-out) infinite;
 }
 
-.on-dark .skeleton::after {
+.on-paper .skeleton {
+  background-color: rgba(20, 20, 20, 0.06);
+}
+
+.on-paper .skeleton::after {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.07) 45%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.07) 55%,
+    rgba(20, 20, 20, 0.07) 45%,
+    rgba(20, 20, 20, 0.12) 50%,
+    rgba(20, 20, 20, 0.07) 55%,
     transparent
   );
 }

@@ -1,42 +1,71 @@
 // ============================================================================
-//  DESIGN TOKENS — "Technical Editorial Modernism"
-//  Single source of truth for colour, type, space, motion and elevation.
-//  Every visual decision in the product resolves to a token defined here.
+//  DESIGN TOKENS — "Cinematic Systems"
+//
+//  The default register is a deep, near-black stage: a WebGL artifact lives
+//  behind the page, sections that want the artifact bleed through are
+//  transparent, and every surface that sits on top of it is glass.
+//
+//  Two explicit registers exist on top of the base:
+//    .on-paper  — the editorial daylight register (inner pages)
+//    .on-dark   — a solid, opaque stage (no artifact bleed)
+//    .cinema    — a transparent stage (artifact visible behind content)
+//
+//  Every visual decision resolves to a token defined here.
 // ============================================================================
 
 :root {
+  color-scheme: dark;
+
   // ------------------------------------------------------------------ colour
-  // Paper & surfaces (light / editorial register)
-  --paper: #ece9e2;
-  --surface: #f7f5f0;
-  --surface-raised: #fffdf8;
+  // The stage (base register)
+  --void: #030407;
+  --stage: #05070d;
+  --surface: #0b0e16;
+  --surface-raised: #111623;
+  --surface-sunken: #040509;
+
+  // Kept for the "inverted surface" idiom: in the dark register `--paper` is
+  // the light ink used on top of dark fills, and `--dark` is the deep fill
+  // itself. The paper register re-points both back to their daylight values.
+  --paper: #f4f6fb;
+  --dark: var(--stage);
+  --dark-elevated: #0f1219;
 
   // Ink & text
-  --ink: #141414;
-  --ink-secondary: #625f59;
-  --ink-muted: #87837c;
+  --ink: #f4f6fb;
+  --ink-secondary: rgba(244, 246, 251, 0.66);
+  --ink-muted: rgba(244, 246, 251, 0.42);
 
-  // Dark register (used for engineering / closing sections)
-  --dark: #171a19;
-  --dark-elevated: #202421;
+  // Accents — a narrow tri-band used for gradients, glows and 3D lighting
+  --accent: #d7ff4f;
+  --accent-dark: #b6dc36;
+  --accent-ink: #0a1200;
+  --accent-2: #7c5cff;
+  --accent-3: #37e8d5;
 
-  // Accent — deliberately scarce
-  --accent: #d9ff57;
-  --accent-dark: #b6d943;
-  --accent-ink: #1d2405;
+  // Glass
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-strong: rgba(255, 255, 255, 0.075);
+  --glass-bg: rgba(11, 14, 22, 0.55);
+  --glass-blur: 18px;
 
   // Rules
-  --border: rgba(20, 20, 20, 0.14);
-  --border-strong: rgba(20, 20, 20, 0.32);
-  --border-dark: rgba(255, 255, 255, 0.13);
-  --border-dark-strong: rgba(255, 255, 255, 0.3);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-faint: rgba(255, 255, 255, 0.055);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-dark-strong: rgba(255, 255, 255, 0.2);
 
   // Semantic aliases
-  --bg: var(--paper);
+  --bg: var(--stage);
   --fg: var(--ink);
   --fg-secondary: var(--ink-secondary);
   --fg-muted: var(--ink-muted);
   --rule: var(--border);
+
+  // Gradients
+  --grad-brand: linear-gradient(115deg, var(--accent) 0%, var(--accent-3) 48%, var(--accent-2) 100%);
+  --grad-soft: linear-gradient(160deg, rgba(215, 255, 79, 0.14), rgba(124, 92, 255, 0.16));
 
   // ------------------------------------------------------------------- type
   --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -49,16 +78,18 @@
   --step-0: clamp(0.938rem, 0.91rem + 0.14vw, 1.063rem);
   --step-1: clamp(1.125rem, 1.06rem + 0.32vw, 1.375rem);
   --step-2: clamp(1.375rem, 1.24rem + 0.68vw, 1.875rem);
-  --step-3: clamp(1.75rem, 1.44rem + 1.55vw, 2.875rem);
-  --step-4: clamp(2.25rem, 1.6rem + 3.25vw, 4.25rem);
-  --step-5: clamp(2.75rem, 1.55rem + 6vw, 6.5rem);
+  --step-3: clamp(1.75rem, 1.44rem + 1.55vw, 3.125rem);
+  --step-4: clamp(2.25rem, 1.6rem + 3.25vw, 4.75rem);
+  --step-5: clamp(2.75rem, 1.4rem + 6.4vw, 7.5rem);
+  --step-6: clamp(3.25rem, 1.2rem + 9.6vw, 11rem);
 
-  --leading-tight: 1.04;
-  --leading-snug: 1.18;
+  --leading-tight: 1.02;
+  --leading-snug: 1.12;
   --leading-normal: 1.55;
-  --leading-relaxed: 1.72;
+  --leading-relaxed: 1.7;
 
-  --tracking-tight: -0.022em;
+  --tracking-display: -0.038em;
+  --tracking-tight: -0.024em;
   --tracking-snug: -0.012em;
   --tracking-label: 0.16em;
   --tracking-wide: 0.08em;
@@ -74,11 +105,12 @@
   --space-8: 4rem;
   --space-9: 6rem;
   --space-10: 8rem;
-  --section-y: clamp(5.5rem, 9vh + 3.5rem, 11rem);
+  --space-11: 12rem;
+  --section-y: clamp(5rem, 8vh + 3.5rem, 10rem);
   --section-y-tight: clamp(3.5rem, 6vh + 2rem, 6.5rem);
 
   // ------------------------------------------------------------------ layout
-  --shell-max: 1480px;
+  --shell-max: 1560px;
   --pad-x: clamp(1.25rem, 4.2vw, 4.5rem);
   --gutter: clamp(1rem, 1.6vw, 1.75rem);
   --columns: 12;
@@ -86,41 +118,127 @@
   --measure: 62ch;
 
   // --------------------------------------------------------------- elevation
-  --radius-0: 0px;
-  --radius-1: 2px;
-  --radius-2: 4px;
-  --shadow-1: 0 1px 0 rgba(20, 20, 20, 0.04);
-  --shadow-2: 0 18px 40px -28px rgba(20, 20, 20, 0.4);
+  --radius-1: 10px;
+  --radius-2: 16px;
+  --radius-3: 26px;
+  --radius-pill: 999px;
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-2: 0 24px 60px -32px rgba(0, 0, 0, 0.85);
+  --shadow-3: 0 46px 120px -50px rgba(0, 0, 0, 0.95);
+  --glow-accent: 0 0 0 1px rgba(215, 255, 79, 0.28), 0 18px 60px -18px rgba(215, 255, 79, 0.32);
+  --glow-iris: 0 0 80px -20px rgba(124, 92, 255, 0.55);
+  --glow-aqua: 0 0 80px -20px rgba(55, 232, 213, 0.45);
 
   // ----------------------------------------------------------------- motion
-  --dur-1: 120ms;
-  --dur-2: 200ms;
-  --dur-3: 320ms;
-  --dur-4: 520ms;
-  --dur-5: 820ms;
+  --dur-1: 140ms;
+  --dur-2: 240ms;
+  --dur-3: 380ms;
+  --dur-4: 620ms;
+  --dur-5: 980ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-linear: linear;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   // ------------------------------------------------------------------ layers
+  --z-stage: 0;
+  --z-content: 2;
   --z-header: 100;
-  --z-loader: 200;
+  --z-chrome: 120;
   --z-menu: 150;
+  --z-cursor: 190;
+  --z-loader: 200;
 }
 
-// Dark register overrides — applied to any block that opts into the dark
-// editorial surface (`.on-dark`), so nested components stay token-driven.
+// ---------------------------------------------------------------------------
+//  DARK REGISTER — an opaque stage. Content inside never shows the artifact.
+// ---------------------------------------------------------------------------
 .on-dark {
-  --bg: var(--dark);
-  --fg: #f4f2ec;
-  --fg-secondary: rgba(244, 242, 236, 0.68);
-  --fg-muted: rgba(244, 242, 236, 0.46);
-  --rule: var(--border-dark);
-  --border: var(--border-dark);
-  --border-strong: var(--border-dark-strong);
-  --surface: var(--dark-elevated);
-  --surface-raised: #262b26;
+  --bg: var(--stage);
+  --surface: #0b0e16;
+  --surface-raised: #111623;
+  --fg: var(--ink);
+  --fg-secondary: var(--ink-secondary);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--border);
 
   color: var(--fg);
   background-color: var(--bg);
+}
+
+// ---------------------------------------------------------------------------
+//  CINEMA REGISTER — the same palette, but transparent so the WebGL artifact
+//  behind the page reads through. Used by the home narrative sections.
+// ---------------------------------------------------------------------------
+.cinema {
+  --bg: transparent;
+  --fg: var(--ink);
+  --fg-secondary: var(--ink-secondary);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--border);
+
+  position: relative;
+  z-index: var(--z-content);
+  color: var(--fg);
+  background-color: transparent;
+}
+
+// ---------------------------------------------------------------------------
+//  PAPER REGISTER — the daylight, editorial register used by the inner pages.
+//  Restores the original light palette wholesale so legacy sections keep
+//  reading exactly as designed.
+// ---------------------------------------------------------------------------
+.on-paper {
+  color-scheme: light;
+
+  --paper: #ece9e2;
+  --surface: #f7f5f0;
+  --surface-raised: #fffdf8;
+  --surface-sunken: #e4e1d9;
+
+  --ink: #141414;
+  --ink-secondary: #5f5c56;
+  --ink-muted: #87837c;
+
+  --accent-dark: #93b325;
+  --accent-ink: #1d2405;
+
+  --glass: rgba(255, 255, 255, 0.62);
+  --glass-strong: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(247, 245, 240, 0.72);
+
+  --border: rgba(20, 20, 20, 0.14);
+  --border-strong: rgba(20, 20, 20, 0.32);
+  --border-faint: rgba(20, 20, 20, 0.07);
+  --border-dark: rgba(20, 20, 20, 0.14);
+  --border-dark-strong: rgba(20, 20, 20, 0.32);
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-secondary: var(--ink-secondary);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--border);
+
+  --shadow-1: 0 1px 0 rgba(20, 20, 20, 0.05);
+  --shadow-2: 0 24px 60px -34px rgba(20, 20, 20, 0.35);
+  --shadow-3: 0 46px 120px -60px rgba(20, 20, 20, 0.5);
+
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+// Nested dark blocks inside a paper register (e.g. code panels) still win.
+.on-paper .on-dark {
+  color-scheme: dark;
+  --surface: #0b0e16;
+  --surface-raised: #111623;
+  --fg: #f4f6fb;
+  --fg-secondary: rgba(244, 246, 251, 0.66);
+  --fg-muted: rgba(244, 246, 251, 0.42);
+  --rule: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-dark-strong: rgba(255, 255, 255, 0.2);
+  --fg-secondary: rgba(244, 246, 251, 0.66);
 }

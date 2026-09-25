@@ -1,10 +1,9 @@
 // ============================================================================
 //  TYPOGRAPHY
-//  Sans  → navigation, body, project UI, technical content
-//  Serif → large editorial statements only
+//  Sans  → display statements, navigation, body, project UI
+//  Serif → editorial emphasis, used only inside italic accents
 //  Mono  → labels, timestamps, technical metadata, code
-//  Fonts are self-hosted (no third-party requests, no layout shift beyond the
-//  swap window) and loaded from src/styles.scss.
+//  Fonts are self-hosted (no third-party requests) and loaded from styles.scss.
 // ============================================================================
 
 @use 'tokens';
@@ -62,17 +61,25 @@ body {
 .h2,
 .h3,
 .h4 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  letter-spacing: var(--tracking-tight);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
   line-height: var(--leading-tight);
   text-wrap: balance;
 }
 
 .display {
   font-size: var(--step-5);
-  line-height: 0.96;
-  letter-spacing: -0.03em;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+// Display masthead — used once per page, the largest statement in the system.
+.display-xl {
+  font-size: var(--step-6);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
 }
 
 .h1 {
@@ -86,24 +93,49 @@ body {
 
 .h3 {
   font-size: var(--step-2);
-  line-height: 1.16;
+  line-height: 1.14;
 }
 
 .h4 {
-  font-family: var(--font-sans);
   font-size: var(--step-1);
   font-weight: 500;
   letter-spacing: var(--tracking-snug);
   line-height: 1.3;
 }
 
-// Serif italic emphasis — the only italic voice in the system, reserved for
-// editorial emphasis inside display statements.
+// Serif italic emphasis — the single editorial voice inside display type.
 .display em,
+.display-xl em,
 .h1 em,
 .h2 em {
+  font-family: var(--font-serif);
   font-style: italic;
+  font-weight: 400;
   font-variation-settings: 'wght' 380;
+  letter-spacing: -0.02em;
+}
+
+// Gradient wash applied to a span of display type.
+.gradient-text {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.on-paper .gradient-text {
+  background: linear-gradient(115deg, #4b6a00 0%, #0f7f73 50%, #4a34b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.on-paper .text-accent {
+  color: #6f8c00;
 }
 
 .body-lg {
@@ -111,7 +143,7 @@ body {
   line-height: var(--leading-relaxed);
   color: var(--fg-secondary);
   letter-spacing: var(--tracking-snug);
-  max-width: 46ch;
+  max-width: 48ch;
 }
 
 .body {
@@ -142,11 +174,11 @@ body {
 }
 
 .label--accent {
-  color: var(--accent-dark);
+  color: var(--accent);
 }
 
-.on-dark .label--accent {
-  color: var(--accent);
+.on-paper .label--accent {
+  color: #6f8c00;
 }
 
 .mono {
@@ -186,8 +218,9 @@ body {
   code {
     font-family: var(--font-mono);
     font-size: 0.86em;
-    background-color: rgba(20, 20, 20, 0.05);
+    background-color: var(--glass);
     border: 1px solid var(--rule);
+    border-radius: 6px;
     padding: 0.1em 0.34em;
     color: var(--fg);
   }
@@ -216,11 +249,6 @@ body {
   }
 }
 
-.on-dark .prose code {
-  background-color: rgba(255, 255, 255, 0.07);
-  color: var(--fg);
-}
-
 .pull-quote {
   font-family: var(--font-serif);
   font-size: var(--step-3);
@@ -234,7 +262,38 @@ body {
     display: block;
     width: 2.5rem;
     height: 2px;
-    background-color: var(--accent-dark);
+    background: var(--grad-brand);
+    border-radius: 2px;
     margin-bottom: var(--space-5);
   }
+}
+
+// ------------------------------------------------------- split text helpers
+// Text split into masked lines/words by the reveal directive. The masks live
+// in CSS so nothing is hidden when JavaScript never runs.
+
+.split {
+  display: block;
+}
+
+.split__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.split__inner {
+  display: block;
+  will-change: transform, opacity;
+}
+
+.split__word {
+  display: inline-block;
+  white-space: pre;
+}
+
+.split__char {
+  display: inline-block;
+  white-space: pre;
 }
