@@ -7,9 +7,10 @@ import {
   inject,
   viewChild,
 } from '@angular/core';
+import { gsap } from 'gsap';
 import type * as THREE_NS from 'three';
 import { MotionService } from '../services/motion.service';
-import type { ArtifactHandle, PointerState, StageParams } from './artifact';
+import { DEFAULT_PARAMS, type ArtifactHandle, type PointerState, type StageParams } from './artifact';
 import { StageService } from './stage.service';
 
 /**
@@ -76,6 +77,7 @@ export class SceneStage {
   private readonly pointer: PointerState = { x: 0, y: 0 };
   private readonly pointerTarget: PointerState = { x: 0, y: 0 };
 
+  private arrival: gsap.core.Tween | null = null;
   private running = false;
   private destroyed = false;
 
@@ -110,6 +112,7 @@ export class SceneStage {
       this.destroyed = true;
       window.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('visibilitychange', onVisibility);
+      this.arrival?.kill();
       this.pause();
       this.artifact?.dispose();
       this.renderer?.dispose();
@@ -217,7 +220,67 @@ export class SceneStage {
     // Reduced motion: the object is still there, at rest, with no loop.
     if (this.motion.motionAllowed()) {
       this.resume();
+      this.arrive();
     }
+  }
+
+  /**
+   * The arrival: the artifact condenses out of the stage into whatever pose the
+   * opening section has already asked for. This is the one piece of
+   * choreography that belongs to the *page* rather than to a scroll position —
+   * without it the object is simply present when the first frame paints, which
+   * reads as a still image rather than a thing that can move.
+   *
+   * Two guards keep it honest: it never runs if the reader has already scrolled
+   * (a restored deep link lands mid-story), and the first wheel or touch lands
+   * it instantly so nobody is left fighting an intro they cannot see.
+   */
+  private arrive(): void {
+    if (typeof window === 'undefined' || window.scrollY > 24) {
+      return;
+    }
+
+    const resting = { ...this.stage.params };
+    this.arrival = gsap.fromTo(
+      this.stage.params,
+      {
+        ...DEFAULT_PARAMS,
+        scale: 0.58,
+        energy: 1.15,
+        wire: 0,
+        glow: 0.9,
+        spread: 0.08,
+        twist: -0.5,
+        opacity: 0,
+      },
+      {
+        ...resting,
+        duration: 1.75,
+        delay: 0.08,
+        ease: 'expo.out',
+        onComplete: () => {
+          this.arrival = null;
+        },
+      },
+    );
+
+    const land = (): void => {
+      if (!this.arrival) {
+        return;
+      }
+      // Land on the final pose rather than leaving the artifact mid-arrival for
+      // the scroll timeline to argue with.
+      this.arrival.progress(1);
+      this.arrival.kill();
+      this.arrival = null;
+    };
+
+    window.addEventListener('wheel', land, { passive: true, once: true });
+    window.addEventListener('touchstart', land, { passive: true, once: true });
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('wheel', land);
+      window.removeEventListener('touchstart', land);
+    });
   }
 
   private resize(): void {
