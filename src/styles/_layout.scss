@@ -40,8 +40,19 @@ body {
   background-color: var(--stage);
   // Sticky-footer layout: a short page still fills the fold, so a paper
   // register page never leaves a band of dark stage under the content.
+  //
+  // The chain has to run all the way down — body → app-root → main → the routed
+  // page — because the shell's children live inside `app-root`, not inside
+  // `body`. Stretching only the body would leave the page short and the stage
+  // showing underneath it.
   display: flex;
   flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
 
 main {

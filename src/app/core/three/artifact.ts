@@ -177,9 +177,11 @@ export function createArtifact(THREE_: typeof THREE, options: ArtifactOptions): 
   // ------------------------------------------------------------ the lattice ---
   // A wireframe icosahedron reads as the underlying structure of the object,
   // which is exactly the register the method section needs.
-  const latticeGeometry = new THREE_.WireframeGeometry(
-    new THREE_.IcosahedronGeometry(1.3, lowPower ? 2 : 3),
-  );
+  // WireframeGeometry copies the positions out of its source, so the source is
+  // released immediately rather than held for the life of the artifact.
+  const latticeSource = new THREE_.IcosahedronGeometry(1.3, lowPower ? 2 : 3);
+  const latticeGeometry = new THREE_.WireframeGeometry(latticeSource);
+  latticeSource.dispose();
   const latticeMaterial = new THREE_.LineBasicMaterial({
     color: colors.c.clone(),
     transparent: true,
