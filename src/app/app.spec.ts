@@ -73,6 +73,28 @@ describe('App shell', () => {
     expect(document.documentElement.style.overflowX).not.toBe('hidden');
   });
 
+  it('covers a route change with the curtain, and only after the first load', async () => {
+    const curtain = (): HTMLElement => {
+      fixture.detectChanges();
+      return (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.curtain')!;
+    };
+
+    // The initial navigation is the loader's business, not the curtain's.
+    await router.navigateByUrl('/');
+    await fixture.whenStable();
+    expect(curtain().style.visibility).not.toBe('visible');
+
+    await router.navigateByUrl('/work');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // A navigation either side of the cover: the panels are up while the lazy
+    // chunk resolves, and the timeline clears them afterwards.
+    const panels = curtain().querySelectorAll('[data-curtain-panel]');
+    expect(panels).toHaveLength(4);
+    expect(curtain().style.visibility).not.toBe('hidden');
+  });
+
   it('keeps the shell intact on a light editorial route', async () => {
     await router.navigateByUrl('/about');
     await fixture.whenStable();

@@ -1,7 +1,8 @@
 .work {
   position: relative;
   padding-block: var(--section-y);
-  background-color: var(--stage);
+  // Deliberately transparent (`.cinema`): the artifact keeps travelling behind
+  // the case studies. Legibility comes from `.work__scrim`, not from a panel.
 }
 
 // A vertical wash behind the case studies: the artifact reads at the edges of

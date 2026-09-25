@@ -1,5 +1,5 @@
 .notfound {
-  padding-block: clamp(4rem, 12vh, 9rem);
+  padding-block: var(--page-top) clamp(4rem, 12vh, 9rem);
 }
 
 .notfound__inner {

@@ -1,5 +1,5 @@
 .reader {
-  padding-block: clamp(3rem, 7vh, 6rem) 0;
+  padding-block: var(--page-top) 0;
 }
 
 .reader__inner {

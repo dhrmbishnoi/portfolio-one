@@ -1,0 +1,71 @@
+// ============================================================================
+//  PAGE CURTAIN
+//  Four panels that rise to cover a route change and clear upward once the new
+//  view has painted. Hidden — and non-interactive — whenever it is not moving.
+// ============================================================================
+
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu, 150);
+  display: block;
+  pointer-events: none;
+}
+
+.curtain {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+.curtain__panels {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.curtain__panel {
+  flex: 1 1 0;
+  height: 100%;
+  transform: translateY(101%);
+  background: linear-gradient(180deg, var(--surface-raised) 0%, var(--void) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+
+  &:nth-child(2) {
+    background: linear-gradient(180deg, #0d1018 0%, var(--void) 100%);
+  }
+
+  &:nth-child(3) {
+    background: linear-gradient(180deg, var(--void) 0%, #0a0c14 100%);
+  }
+
+  // A single hairline of brand colour travels with the leading panel, so the
+  // wipe reads as a deliberate cut rather than a black flash.
+  &:first-child::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--grad-brand);
+    opacity: 0.9;
+  }
+}
+
+.curtain__mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--accent);
+  text-shadow: var(--glow-accent);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain {
+    display: none;
+  }
+}

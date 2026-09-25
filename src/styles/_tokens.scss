@@ -115,6 +115,8 @@
   --gutter: clamp(1rem, 1.6vw, 1.75rem);
   --columns: 12;
   --header-h: 4.5rem;
+  // Top padding for a routed page: the fixed header plus breathing room.
+  --page-top: calc(var(--header-h) + clamp(1.75rem, 5vh, 3.5rem));
   --measure: 62ch;
 
   // --------------------------------------------------------------- elevation

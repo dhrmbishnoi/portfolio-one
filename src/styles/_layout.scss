@@ -32,12 +32,64 @@ html.lenis body {
 
 body {
   margin: 0;
-  min-height: 100%;
+  min-height: 100svh;
   // `clip` rather than `hidden`: hidden turns the body into a scroll container,
   // which is exactly the condition that breaks ScrollTrigger pinning. Clip
   // removes the overflow without touching the scroll topology.
   overflow-x: clip;
   background-color: var(--stage);
+  // Sticky-footer layout: a short page still fills the fold, so a paper
+  // register page never leaves a band of dark stage under the content.
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+main > * {
+  flex: 1 0 auto;
+}
+
+// ---------------------------------------------------------------------------
+//  Component hosts are block boxes
+//
+//  A custom element is `display: inline` until told otherwise. That is fine
+//  until a host carries a register class: `.on-paper` sets `background-color`
+//  and `color`, and on an inline box with block children the background paints
+//  over a zero-height fragment — so the page would inherit the daylight ink
+//  over the dark stage. Every host that owns content is therefore block.
+// ---------------------------------------------------------------------------
+
+app-about,
+app-article,
+app-case-study,
+app-code-block,
+app-contact,
+app-contact-cta,
+app-hero,
+app-journal,
+app-method,
+app-not-found,
+app-principles,
+app-project-forge,
+app-project-orbital,
+app-project-signal,
+app-release-gate,
+app-selected-work,
+app-site-footer,
+app-site-header,
+app-story,
+app-systems,
+app-systems-section,
+app-technical-diagram,
+app-timeline-lane,
+app-vital-trace,
+app-work {
+  display: block;
 }
 
 img,
