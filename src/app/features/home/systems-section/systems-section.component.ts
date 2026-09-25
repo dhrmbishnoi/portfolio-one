@@ -28,7 +28,7 @@ import { RevealDirective } from '../../../shared/directives/reveal.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   // The daylight interlude: the paper register gives the eye a rest between the
   // two dark movements and the two that follow.
-  host: { class: 'on-paper' },
+  host: { class: 'on-paper register-seam register-seam--top' },
 })
 export class SystemsSection implements OnDestroy {
   protected readonly entries = SYSTEM_ENTRIES;

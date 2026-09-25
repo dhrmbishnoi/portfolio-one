@@ -6,15 +6,16 @@ import { TechnicalLoader } from './shared/components/technical-loader/technical-
 import { Cursor } from './shared/components/cursor/cursor.component';
 import { PageCurtain } from './shared/components/page-curtain/page-curtain.component';
 import { BootstrapService } from './core/services/bootstrap.service';
+import { NavigationLifecycle } from './core/services/navigation.service';
 import { SmoothScrollService } from './core/services/smooth-scroll.service';
 
 /**
  * APP SHELL
  * ---------------------------------------------------------------------------
  * The shell owns the persistent chrome: the loader, the header, the router
- * outlet, the footer, the film grain and the pointer instrument. It also starts
- * the smooth scroller, because every scroll-driven story in the app measures
- * itself against that one scroller.
+ * outlet, the footer, the film grain, the route curtain and the pointer
+ * instrument. It also starts the smooth scroller, because every scroll-driven
+ * story in the app measures itself against that one scroller.
  */
 @Component({
   selector: 'app-root',
@@ -52,6 +53,9 @@ import { SmoothScrollService } from './core/services/smooth-scroll.service';
 export class App implements OnInit {
   protected readonly bootstrap = inject(BootstrapService);
   private readonly scroll = inject(SmoothScrollService);
+  // Instantiated for its side effects: it re-measures after each navigation and
+  // hands focus to the new page. The shell is the only place that always exists.
+  private readonly navigation = inject(NavigationLifecycle);
 
   ngOnInit(): void {
     this.scroll.initialise();

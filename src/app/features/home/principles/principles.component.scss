@@ -4,6 +4,9 @@
 }
 
 .principles__inner {
+  // Above the register seam that dissolves this section back into the stage.
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: clamp(3rem, 6vw, 5rem);
 }

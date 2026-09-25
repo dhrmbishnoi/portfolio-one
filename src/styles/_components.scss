@@ -494,3 +494,50 @@
   color: var(--fg);
   background-color: var(--glass);
 }
+
+// ---------------------------------------------------------- register seams ---
+// The home narrative moves between two registers: the dark stage, where the
+// artifact reads through the page, and the paper interlude. A hard cut between
+// near-black and daylight is the one transition the eye refuses to forgive — it
+// reads as a rendering mistake rather than an edit. These seams dissolve one
+// register into the other over the section's own vertical padding, so the change
+// of light lands as a deliberate cut.
+//
+// `color-mix` rather than a fade to `transparent`: plain transparent is
+// rgba(0,0,0,0), and interpolating towards it darkens the midpoint of the fade.
+
+.register-seam {
+  position: relative;
+}
+
+.register-seam::before,
+.register-seam::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  // The fade has to finish inside the section's own vertical padding, or the
+  // first line of copy ends up sitting on the dark end of the gradient. The
+  // upper bound matches the lower bound of `--section-y`; keep the two in step.
+  height: clamp(3rem, 6vh, 5rem);
+  pointer-events: none;
+}
+
+.register-seam--top::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--stage) 100%, transparent),
+    color-mix(in srgb, var(--stage) 0%, transparent)
+  );
+}
+
+.register-seam--bottom::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--stage) 100%, transparent),
+    color-mix(in srgb, var(--stage) 0%, transparent)
+  );
+}

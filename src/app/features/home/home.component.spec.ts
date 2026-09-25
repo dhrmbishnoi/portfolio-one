@@ -47,6 +47,22 @@ describe('HomeComponent', () => {
     });
   });
 
+  it('dissolves between the dark stage and the paper interlude', () => {
+    // The narrative moves between two registers; a hard cut from near-black to
+    // daylight reads as a rendering fault rather than an edit, so each edge of
+    // the paper run carries a seam. They live on the hosts, which own the
+    // paper background the fade has to sit on top of.
+    const systems = host.querySelector('app-systems-section')!;
+    const principles = host.querySelector('app-principles')!;
+
+    expect(systems.classList.contains('register-seam--top')).toBe(true);
+    expect(principles.classList.contains('register-seam--bottom')).toBe(true);
+    // Only the outer edges: the two paper sections are contiguous, and a seam
+    // between them would draw a dark band across the middle of the interlude.
+    expect(systems.classList.contains('register-seam--bottom')).toBe(false);
+    expect(principles.classList.contains('register-seam--top')).toBe(false);
+  });
+
   it('renders the stage, the chrome and the opening movement', () => {
     expect(host.querySelector('app-scene-stage')).toBeTruthy();
     expect(host.querySelector('app-scroll-chrome')).toBeTruthy();

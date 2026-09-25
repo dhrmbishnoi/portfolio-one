@@ -47,7 +47,7 @@ const PRINCIPLES = [
   styleUrl: './principles.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   // Closes the paper movement: the last daylight frame before the dark close.
-  host: { class: 'on-paper' },
+  host: { class: 'on-paper register-seam register-seam--bottom' },
 })
 export class Principles implements OnDestroy {
   protected readonly principles = PRINCIPLES;
